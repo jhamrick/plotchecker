@@ -45,6 +45,13 @@ class TestScatterPlotChecker(object):
     default_scatter_s = np.ones(10) * 20
     default_plot_s = np.ones(10) * 36
 
+    # markers
+    m = np.array(['s'] * 10)
+    m0 = np.array(['s'] * 10)
+    default_scatter_m = np.array(['o'] * 10)
+    default_plot_m = np.array(['None'] * 10)
+
+
     def setup(self):
         self.fig, self.axis = plt.subplots()
 
@@ -57,66 +64,73 @@ class TestScatterPlotChecker(object):
             self.axis.scatter(self.x[i], self.y[i])
 
         pc = ScatterPlotChecker(self.axis)
-        assert_array_equal(pc.x_data, self.x)
-        assert_array_equal(pc.y_data, self.y)
-        assert_array_equal(pc.colors, self.default_scatter_c)
-        assert_array_equal(pc.alphas, self.default_scatter_a)
-        assert_array_equal(pc.sizes, self.default_scatter_s)
+        pc.assert_x_data_equal(self.x)
+
+        pc.assert_y_data_equal(self.y)
+        pc.assert_colors_equal(self.default_scatter_c)
+        pc.assert_alphas_equal(self.default_scatter_a)
+        pc.assert_sizes_equal(self.default_scatter_s)
+        #pc.assert_markers_equal(self.default_scatter_m)
 
     def test_forloop_scatter_points_single(self):
         """Using scatter in a for loop with single colors and sizes"""
         for i in range(self.x.size):
-            self.axis.scatter(self.x[i], self.y[i], c=self.ca[i], s=self.s[i])
+            self.axis.scatter(self.x[i], self.y[i], c=self.ca[i], s=self.s[i], marker=self.m[i])
 
         pc = ScatterPlotChecker(self.axis)
-        assert_array_equal(pc.x_data, self.x)
-        assert_array_equal(pc.y_data, self.y)
-        assert_array_equal(pc.colors, self.c)
-        assert_array_equal(pc.alphas, self.a)
-        assert_array_equal(pc.sizes, self.s)
+        pc.assert_x_data_equal(self.x)
+        pc.assert_y_data_equal(self.y)
+        pc.assert_colors_equal(self.c)
+        pc.assert_alphas_equal(self.a)
+        pc.assert_sizes_equal(self.s)
+        #pc.assert_markers_equal(self.m)
 
     def test_forloop_scatter_points_all(self):
         """Using scatter in a for loop with all colors and sizes"""
         for i in range(self.x.size):
-            self.axis.scatter(self.x[i], self.y[i], c=self.ca, s=self.s)
+            self.axis.scatter(self.x[i], self.y[i], c=self.ca, s=self.s, marker=self.m[i])
 
         pc = ScatterPlotChecker(self.axis)
-        assert_array_equal(pc.x_data, self.x)
-        assert_array_equal(pc.y_data, self.y)
-        assert_array_equal(pc.colors, self.c0)
-        assert_array_equal(pc.alphas, self.a0)
-        assert_array_equal(pc.sizes, self.s0)
+        pc.assert_x_data_equal(self.x)
+        pc.assert_y_data_equal(self.y)
+        pc.assert_colors_equal(self.c0)
+        pc.assert_alphas_equal(self.a0)
+        pc.assert_sizes_equal(self.s0)
+        #pc.assert_markers_equal(self.m0)
 
     def test_scatter_points(self):
         """Using scatter on its own"""
         self.axis.scatter(self.x, self.y)
 
         pc = ScatterPlotChecker(self.axis)
-        assert_array_equal(pc.x_data, self.x)
-        assert_array_equal(pc.y_data, self.y)
-        assert_array_equal(pc.colors, self.default_scatter_c)
-        assert_array_equal(pc.alphas, self.)
-        assert_array_equal(pc.sizes, self.default_scatter_s)
+        pc.assert_x_data_equal(self.x)
+        pc.assert_y_data_equal(self.y)
+        pc.assert_colors_equal(self.default_scatter_c)
+        pc.assert_alphas_equal(self.default_scatter_a)
+        pc.assert_sizes_equal(self.default_scatter_s)
+        #pc.assert_markers_equal(self.default_scatter_m)
 
     def test_scatter_points_single(self):
         """Using scatter on its own with single colors and sizes"""
-        self.axis.scatter(self.x, self.y, c=self.c[0], s=self.s[0])
+        self.axis.scatter(self.x, self.y, c=self.c[0], s=self.s[0], marker=self.m[0])
 
         pc = ScatterPlotChecker(self.axis)
-        assert_array_equal(pc.x_data, self.x)
-        assert_array_equal(pc.y_data, self.y)
-        assert_array_equal(pc.colors, self.c0)
-        assert_array_equal(pc.sizes, self.s0)
+        pc.assert_x_data_equal(self.x)
+        pc.assert_y_data_equal(self.y)
+        pc.assert_colors_equal(self.c0)
+        pc.assert_sizes_equal(self.s0)
+        #pc.assert_markers_equal(self.m0)
 
     def test_scatter_points_all(self):
         """Using scatter on its own with all colors and sizes"""
-        self.axis.scatter(self.x, self.y, c=self.c, s=self.s)
+        self.axis.scatter(self.x, self.y, c=self.c, s=self.s, marker=self.m[0])
 
         pc = ScatterPlotChecker(self.axis)
-        assert_array_equal(pc.x_data, self.x)
-        assert_array_equal(pc.y_data, self.y)
-        assert_array_equal(pc.colors, self.c)
-        assert_array_equal(pc.sizes, self.s)
+        pc.assert_x_data_equal(self.x)
+        pc.assert_y_data_equal(self.y)
+        pc.assert_colors_equal(self.c)
+        pc.assert_sizes_equal(self.s)
+        #pc.assert_markers_equal(self.m)
 
     def test_forloop_plot_points(self):
         """Using plot within a for loop"""
@@ -124,10 +138,11 @@ class TestScatterPlotChecker(object):
             self.axis.plot(self.x[i], self.y[i])
 
         pc = ScatterPlotChecker(self.axis)
-        assert_array_equal(pc.x_data, self.x)
-        assert_array_equal(pc.y_data, self.y)
-        assert_array_equal(pc.colors, self.default_plot_c)
-        assert_array_equal(pc.sizes, self.default_plot_s)
+        pc.assert_x_data_equal(self.x)
+        pc.assert_y_data_equal(self.y)
+        pc.assert_colors_equal(self.default_plot_c)
+        pc.assert_sizes_equal(self.default_plot_s)
+        pc.assert_markers_equal(self.default_plot_m)
 
     def test_forloop_plot_points_alpha(self):
         """Using plot within a for loop"""
@@ -135,41 +150,45 @@ class TestScatterPlotChecker(object):
             self.axis.plot(self.x[i], self.y[i], alpha=self.a[i])
 
         pc = ScatterPlotChecker(self.axis)
-        assert_array_equal(pc.x_data, self.x)
-        assert_array_equal(pc.y_data, self.y)
-        assert_array_equal(pc.colors, self.default_plot_c)
-        assert_array_equal(pc.alphas, self.a)
-        assert_array_equal(pc.sizes, self.default_plot_s)
+        pc.assert_x_data_equal(self.x)
+        pc.assert_y_data_equal(self.y)
+        pc.assert_colors_equal(self.default_plot_c)
+        pc.assert_alphas_equal(self.a)
+        pc.assert_sizes_equal(self.default_plot_s)
+        pc.assert_markers_equal(self.default_plot_m)
 
     def test_forloop_plot_points_single(self):
         """Using plot within a for loop with single colors and sizes"""
         for i in range(self.x.size):
-            self.axis.plot(self.x[i], self.y[i], color=self.ca[i], ms=np.sqrt(self.s[i]))
+            self.axis.plot(self.x[i], self.y[i], color=self.ca[i], ms=np.sqrt(self.s[i]), marker=self.m[i])
 
         pc = ScatterPlotChecker(self.axis)
-        assert_array_equal(pc.x_data, self.x)
-        assert_array_equal(pc.y_data, self.y)
-        assert_array_equal(pc.colors, self.c)
-        assert_array_equal(pc.alphas, self.a)
+        pc.assert_x_data_equal(self.x)
+        pc.assert_y_data_equal(self.y)
+        pc.assert_colors_equal(self.c)
+        pc.assert_alphas_equal(self.a)
         assert_almost_equal(pc.sizes, self.s)
+        pc.assert_markers_equal(self.m)
 
     def test_plot_points(self):
         """Using plot on its own"""
         self.axis.plot(self.x, self.y, ls='')
 
         pc = ScatterPlotChecker(self.axis)
-        assert_array_equal(pc.x_data, self.x)
-        assert_array_equal(pc.y_data, self.y)
-        assert_array_equal(pc.colors, self.default_scatter_c)
-        assert_array_equal(pc.sizes, self.default_plot_s)
+        pc.assert_x_data_equal(self.x)
+        pc.assert_y_data_equal(self.y)
+        pc.assert_colors_equal(self.default_scatter_c)
+        pc.assert_sizes_equal(self.default_plot_s)
+        pc.assert_markers_equal(self.default_plot_m)
 
     def test_plot_points_single(self):
         """Using plot on its own with single colors and sizes"""
-        self.axis.plot(self.x, self.y, color=self.c[0], ms=np.sqrt(self.s[0]), ls='')
+        self.axis.plot(self.x, self.y, color=self.c[0], ms=np.sqrt(self.s[0]), ls='', marker=self.m[0])
 
         pc = ScatterPlotChecker(self.axis)
-        assert_array_equal(pc.x_data, self.x)
-        assert_array_equal(pc.y_data, self.y)
-        assert_array_equal(pc.colors, self.c0)
+        pc.assert_x_data_equal(self.x)
+        pc.assert_y_data_equal(self.y)
+        pc.assert_colors_equal(self.c0)
         assert_almost_equal(pc.sizes, self.s0)
+        pc.assert_markers_equal(self.m0)
 
