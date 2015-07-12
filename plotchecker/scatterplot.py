@@ -12,7 +12,7 @@ class ScatterPlotChecker(PlotChecker):
 
         # check that there are only lines or collections, not both
         if len(self.lines) == 0 and len(self.collections) == 0:
-            raise InvalidPlotError("No data found. Did you call plt.plot or plt.scatter?")
+            raise InvalidPlotError("No data found")
 
         # check that if there are lines, linestyle is ''
         for x in self.lines:
@@ -34,9 +34,6 @@ class ScatterPlotChecker(PlotChecker):
     def assert_x_data_equal(self, x_data):
         np.testing.assert_equal(x_data, self.x_data)
 
-    def assert_x_data_almost_equal(self, x_data):
-        np.testing.assert_almost_equal(x_data, self.x_data)
-
     @property
     def y_data(self):
         all_y_data = []
@@ -51,9 +48,6 @@ class ScatterPlotChecker(PlotChecker):
 
     def assert_y_data_equal(self, y_data):
         np.testing.assert_equal(y_data, self.y_data)
-
-    def assert_y_data_almost_equal(self, y_data):
-        np.testing.assert_almost_equal(y_data, self.y_data)
 
     @property
     def colors(self):
@@ -79,12 +73,6 @@ class ScatterPlotChecker(PlotChecker):
             colors = self._tile_or_trim(self.x_data, colors)
         np.testing.assert_equal(colors, self.colors)
 
-    def assert_colors_almost_equal(self, colors):
-        colors = np.array([self._color2rgb(x) for x in colors])
-        if len(colors) == 1:
-            colors = self._tile_or_trim(self.x_data, colors)
-        np.testing.assert_almost_equal(colors, self.colors)
-
     @property
     def edgecolors(self):
         all_colors = []
@@ -108,12 +96,6 @@ class ScatterPlotChecker(PlotChecker):
         if len(edgecolors) == 1:
             edgecolors = self._tile_or_trim(self.x_data, edgecolors)
         np.testing.assert_equal(edgecolors, self.edgecolors)
-
-    def assert_edgecolors_almost_equal(self, edgecolors):
-        edgecolors = np.array([self._color2rgb(x) for x in edgecolors])
-        if len(edgecolors) == 1:
-            edgecolors = self._tile_or_trim(self.x_data, edgecolors)
-        np.testing.assert_almost_equal(edgecolors, self.edgecolors)
 
     @property
     def edgewidths(self):
@@ -140,13 +122,6 @@ class ScatterPlotChecker(PlotChecker):
             edgewidths = self._tile_or_trim(self.x_data, edgewidths)
         np.testing.assert_equal(edgewidths, self.edgewidths)
 
-    def assert_edgewidths_almost_equal(self, edgewidths):
-        if not hasattr(edgewidths, '__iter__'):
-            edgewidths = np.array([edgewidths])
-        if len(edgewidths) == 1:
-            edgewidths = self._tile_or_trim(self.x_data, edgewidths)
-        np.testing.assert_almost_equal(edgewidths, self.edgewidths)
-
     @property
     def sizes(self):
         all_sizes = []
@@ -168,18 +143,12 @@ class ScatterPlotChecker(PlotChecker):
     def assert_sizes_equal(self, sizes):
         np.testing.assert_equal(sizes, self.sizes)
 
-    def assert_sizes_almost_equal(self, sizes):
-        np.testing.assert_almost_equal(sizes, self.sizes)
-
     @property
     def markersizes(self):
         return np.sqrt(self.sizes)
 
     def assert_markersizes_equal(self, markersizes):
         np.testing.assert_equal(markersizes, self.markersizes)
-
-    def assert_markersizes_almost_equal(self, markersizes):
-        np.testing.assert_almost_equal(markersizes, self.markersizes)
 
     @property
     def markers(self):
