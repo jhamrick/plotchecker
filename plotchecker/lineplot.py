@@ -112,7 +112,10 @@ class LinePlotChecker(PlotChecker):
 
     @property
     def labels(self):
-        return np.array([x.get_label() for x in self.lines])
+        legend = self.axis.get_legend()
+        if legend is None:
+            return np.array([])
+        return np.array([x.get_text() for x in legend.texts])
 
     def assert_labels_equal(self, labels):
         self._assert_equal(np.array(labels), self.labels)
