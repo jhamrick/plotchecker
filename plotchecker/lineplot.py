@@ -1,5 +1,6 @@
 import numpy as np
 import itertools
+import matplotlib
 
 from .base import PlotChecker, InvalidPlotError
 
@@ -7,24 +8,31 @@ from .base import PlotChecker, InvalidPlotError
 class LinePlotChecker(PlotChecker):
     """A plot checker for line plots."""
 
-    def __init__(self, axis, try_permutations=False):
+    def __init__(self, axis):
         super(LinePlotChecker, self).__init__(axis)
-        self.try_permutations = try_permutations
         self.lines = self.axis.get_lines()
+        self.perm = list(range(len(self.lines)))
 
         # check that there are only lines or collections, not both
         if len(self.lines) == 0:
             raise InvalidPlotError("No data found")
 
     def _assert_equal(self, x, y):
-        if self.try_permutations:
-            for perm in itertools.permutations(np.arange(len(x))):
-                if (x[list(perm)] == y).all():
-                    return
-            raise AssertionError
+        np.testing.assert_equal(x[self.perm], y)
 
+    def find_permutation(self, attr_name, attr_val):
+        if attr_name in ('colors', 'markerfacecolors', 'markeredgecolors'):
+            x = np.array([self._color2rgb(i) for i in attr_val])
         else:
-            np.testing.assert_equal(x, y)
+            x = np.array(attr_val)
+
+        y = getattr(self, attr_name)
+        for perm in itertools.permutations(np.arange(len(x))):
+            if (x[list(perm)] == y).all():
+                self.perm = list(perm)
+                return
+
+        raise AssertionError("Could not find correct permutation of attr '{}'".format(attr_name))
 
     @property
     def x_data(self):
@@ -52,7 +60,7 @@ class LinePlotChecker(PlotChecker):
 
     @property
     def linewidths(self):
-        return np.array([self._color2rgb(x.get_linewidth()) for x in self.lines])
+        return np.array([x.get_linewidth() for x in self.lines])
 
     def assert_linewidths_equal(self, linewidths):
         self._assert_equal(linewidths, self.linewidths)
@@ -101,3 +109,10 @@ class LinePlotChecker(PlotChecker):
 
     def assert_markers_equal(self, markers):
         self._assert_equal(np.array(markers), self.markers)
+
+    @property
+    def labels(self):
+        return np.array([x.get_label() for x in self.lines])
+
+    def assert_labels_equal(self, labels):
+        self._assert_equal(np.array(labels), self.labels)
