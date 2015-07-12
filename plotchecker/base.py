@@ -33,7 +33,7 @@ class PlotChecker(object):
             return np.array(color, dtype=float)[:3]
         else:
             raise ValueError("Invalid color: {}".format(color))
-
+            
     @classmethod
     def _color2alpha(cls, color):
         if isinstance(color, six.string_types):

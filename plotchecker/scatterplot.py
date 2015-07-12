@@ -168,3 +168,34 @@ class ScatterPlotChecker(PlotChecker):
 
     def assert_markers_equal(self, markers):
         np.testing.assert_equal(markers, self.markers)
+
+    @property
+    def alphas(self):
+        all_alphas = []
+
+        if len(self.lines) > 0:
+            for x in self.lines:
+                points = x.get_xydata()
+                if x.get_alpha() is None:
+                    alpha = np.array([self._color2alpha(x.get_markerfacecolor())])
+                else:
+                    alpha = np.array([x.get_alpha()])
+                all_alphas.append(self._tile_or_trim(points, alpha))
+
+        if len(self.collections) > 0:
+            for x in self.collections:
+                points = x.get_offsets()
+                if x.get_alpha() is None:
+                    alpha = np.array([self._color2alpha(i) for i in x.get_facecolors()])
+                else:
+                    alpha = np.array([x.get_alpha()])
+                all_alphas.append(self._tile_or_trim(points, alpha))
+
+        return np.concatenate(all_alphas)
+
+    def assert_alphas_equal(self, alphas):
+        if not hasattr(alphas, '__iter__'):
+            alphas = np.array([alphas])
+        if len(alphas) == 1:
+            alphas = self._tile_or_trim(self.x_data, alphas)
+        np.testing.assert_equal(np.array(alphas), self.alphas)

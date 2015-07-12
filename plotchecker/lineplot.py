@@ -119,3 +119,20 @@ class LinePlotChecker(PlotChecker):
 
     def assert_labels_equal(self, labels):
         self._assert_equal(np.array(labels), self.labels)
+
+    @property
+    def alphas(self):
+        all_alphas = np.empty(len(self.lines))
+        for i, x in enumerate(self.lines):
+            if x.get_alpha() is None:
+                all_alphas[i] = self._color2alpha(x.get_color())
+            else:
+                all_alphas[i] = x.get_alpha()
+        return all_alphas
+
+    def assert_alphas_equal(self, alphas):
+        if not hasattr(alphas, '__iter__'):
+            alphas = np.array([alphas])
+        if len(alphas) == 1:
+            alphas = self._tile_or_trim(self.x_data, alphas)
+        self._assert_equal(np.array(alphas), self.alphas)
