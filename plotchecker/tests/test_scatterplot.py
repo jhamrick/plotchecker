@@ -196,3 +196,22 @@ def test_example_2(axes):
         # can't actually check markers, since they are unrecoverable
         # from plt.scatter :(
         pc.assert_markers_equal('o')
+
+
+def test_bad_colors_and_sizes(axis):
+    x = np.random.rand(10)
+    y = np.random.rand(10)
+    c = np.random.rand(10, 3)
+    s = np.random.rand(10) * 5
+
+    for i in range(10):
+        axis.scatter(x[i], y[i], c=c, s=s)
+
+    pc = ScatterPlotChecker(axis)
+    with pytest.raises(AssertionError):
+        pc.assert_colors_equal(c)
+    with pytest.raises(AssertionError):
+        pc.assert_sizes_equal(s)
+
+    pc.assert_colors_equal(c[[0]])
+    pc.assert_sizes_equal(s[0])
