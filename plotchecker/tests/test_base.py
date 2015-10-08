@@ -78,3 +78,52 @@ def test_ylabel_assertions(axis):
     with pytest.raises(AssertionError):
         pc.assert_ylabel_equal("bar")
 
+
+def test_assert_xlim_equal(axis):
+    pc = PlotChecker(axis)
+    axis.set_xlim(0, 1)
+    pc.assert_xlim_equal((0, 1))
+    with pytest.raises(AssertionError):
+        pc.assert_xlim_equal((1, 0))
+
+
+def test_assert_ylim_equal(axis):
+    pc = PlotChecker(axis)
+    axis.set_ylim(0, 1)
+    pc.assert_ylim_equal((0, 1))
+    with pytest.raises(AssertionError):
+        pc.assert_ylim_equal((1, 0))
+
+
+def test_assert_xticks_equal(axis):
+    pc = PlotChecker(axis)
+    axis.set_xticks([0, 1, 2, 3])
+    pc.assert_xticks_equal([0, 1, 2, 3])
+    with pytest.raises(AssertionError):
+        pc.assert_xticks_equal([0, 1])
+
+
+def test_assert_yticks_equal(axis):
+    pc = PlotChecker(axis)
+    axis.set_yticks([0, 1, 2, 3])
+    pc.assert_yticks_equal([0, 1, 2, 3])
+    with pytest.raises(AssertionError):
+        pc.assert_yticks_equal([0, 1])
+
+
+def test_assert_xticklabels_equal(axis):
+    pc = PlotChecker(axis)
+    axis.set_xticks([0, 1, 2, 3])
+    axis.set_xticklabels(['a', 'b', 'c', 'd'])
+    pc.assert_xticklabels_equal(['a', 'b', 'c', 'd'])
+    with pytest.raises(AssertionError):
+        pc.assert_xticklabels_equal(['a', 'b', 'c'])
+
+
+def test_assert_yticklabels_equal(axis):
+    pc = PlotChecker(axis)
+    axis.set_yticks([0, 1, 2, 3])
+    axis.set_yticklabels(['a', 'b', 'c', 'd'])
+    pc.assert_yticklabels_equal(['a', 'b', 'c', 'd'])
+    with pytest.raises(AssertionError):
+        pc.assert_yticklabels_equal(['a', 'b', 'c'])

@@ -66,10 +66,11 @@ class PlotChecker(object):
 
     @property
     def title(self):
-        return self.axis.get_title()
+        return self.axis.get_title().strip()
 
     def assert_title_equal(self, title):
         """Asserts that the given title is the same as the plotted title."""
+        title = title.strip()
         if self.title != title:
             raise AssertionError(
                 "title is incorrect: '{}'' (expected '{}')".format(
@@ -77,15 +78,16 @@ class PlotChecker(object):
 
     def assert_title_exists(self):
         """Asserts that the plotted title is non-empty."""
-        if self.title.strip() == '':
+        if self.title == '':
             raise AssertionError("no title")
 
     @property
     def xlabel(self):
-        return self.axis.get_xlabel()
+        return self.axis.get_xlabel().strip()
 
     def assert_xlabel_equal(self, xlabel):
         """Asserts that the given xlabel is the same as the plotted xlabel."""
+        xlabel = xlabel.strip()
         if self.xlabel != xlabel:
             raise AssertionError(
                 "xlabel is incorrect: '{}'' (expected '{}')".format(
@@ -93,15 +95,16 @@ class PlotChecker(object):
 
     def assert_xlabel_exists(self):
         """Asserts that the plotted xlabel is non-empty."""
-        if self.xlabel.strip() == '':
+        if self.xlabel == '':
             raise AssertionError("no xlabel")
 
     @property
     def ylabel(self):
-        return self.axis.get_ylabel()
+        return self.axis.get_ylabel().strip()
 
     def assert_ylabel_equal(self, ylabel):
         """Asserts that the given ylabel is the same as the plotted ylabel."""
+        ylabel = ylabel.strip()
         if self.ylabel != ylabel:
             raise AssertionError(
                 "ylabel is incorrect: '{}'' (expected '{}')".format(
@@ -109,8 +112,58 @@ class PlotChecker(object):
 
     def assert_ylabel_exists(self):
         """Asserts that the plotted ylabel is non-empty."""
-        if self.ylabel.strip() == '':
+        if self.ylabel == '':
             raise AssertionError("no ylabel")
+
+    @property
+    def xlim(self):
+        return self.axis.get_xlim()
+
+    def assert_xlim_equal(self, xlim):
+        if self.xlim != xlim:
+            raise AssertionError(
+                "xlim is incorrect: {} (expected {})".format(
+                    self.xlim, xlim))
+
+    @property
+    def ylim(self):
+        return self.axis.get_ylim()
+
+    def assert_ylim_equal(self, ylim):
+        if self.ylim != ylim:
+            raise AssertionError(
+                "ylim is incorrect: {} (expected {})".format(
+                    self.ylim, ylim))
+
+    @property
+    def xticks(self):
+        return self.axis.get_xticks()
+
+    def assert_xticks_equal(self, xticks):
+        np.testing.assert_equal(xticks, self.xticks)
+
+    @property
+    def yticks(self):
+        return self.axis.get_yticks()
+
+    def assert_yticks_equal(self, yticks):
+        np.testing.assert_equal(yticks, self.yticks)
+
+    @property
+    def xticklabels(self):
+        return [x.get_text().strip() for x in self.axis.get_xticklabels()]
+
+    def assert_xticklabels_equal(self, xticklabels):
+        xticklabels = [x.strip() for x in xticklabels]
+        np.testing.assert_equal(xticklabels, self.xticklabels)
+
+    @property
+    def yticklabels(self):
+        return [x.get_text().strip() for x in self.axis.get_yticklabels()]
+
+    def assert_yticklabels_equal(self, yticklabels):
+        yticklabels = [y.strip() for y in yticklabels]
+        np.testing.assert_equal(yticklabels, self.yticklabels)
 
 
 # def get_label_text(ax):

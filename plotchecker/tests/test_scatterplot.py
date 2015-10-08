@@ -105,6 +105,34 @@ def test_data(axis):
     pc.assert_y_data_equal(np.concatenate([y0, y1, y4.ravel(), y2, y3]))
 
 
+def test_edgecolors(axis):
+    x = np.random.rand(10)
+    y = np.random.rand(10)
+    c = np.random.rand(10, 3)
+
+    for i in range(5):
+        axis.plot(x[i], y[i], markeredgecolor=c[i])
+    for i in range(5, 10):
+        axis.scatter(x[i], y[i], edgecolor=c[i])
+
+    pc = ScatterPlotChecker(axis)
+    pc.assert_edgecolors_equal(c)
+
+
+def test_edgewidths(axis):
+    x = np.random.rand(10)
+    y = np.random.rand(10)
+    w = np.arange(1, 11)
+
+    for i in range(5):
+        axis.plot(x[i], y[i], markeredgewidth=w[i])
+    for i in range(5, 10):
+        axis.scatter(x[i], y[i], linewidth=w[i])
+
+    pc = ScatterPlotChecker(axis)
+    pc.assert_edgewidths_equal(w)
+
+
 def test_example_1(axes):
     x = np.random.rand(20)
     y = np.random.rand(20)
