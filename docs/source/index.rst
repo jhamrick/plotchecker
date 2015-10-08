@@ -7,8 +7,8 @@ Contents:
    :maxdepth: 2
 
    plotchecker
-   scatterplotchecker
    lineplotchecker
+   scatterplotchecker
 
 
 
