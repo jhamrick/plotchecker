@@ -199,24 +199,7 @@ class ScatterPlotChecker(PlotChecker):
 
     @property
     def markers(self):
-        all_markers = []
-
-        if len(self.lines) > 0:
-            for x in self.lines:
-                points = x.get_xydata()
-                markers = np.array([self._parse_marker(x.get_marker())])
-                all_markers.append(self._tile_or_trim(points, markers))
-
-        if len(self.collections) > 0:
-            # Can't get the marker style from a collection :( :( :(
-            # Hacky not-really-a-workaroud for now: assume it is a circle since
-            # that is the default for scatter
-            for x in self.collections:
-                points = x.get_offsets()
-                markers = np.array(['o'])
-                all_markers.append(self._tile_or_trim(points, markers))
-
-        return np.concatenate(all_markers, axis=0)
+        raise NotImplementedError("markers are unrecoverable for scatter plots")
 
     def assert_markers_equal(self, markers):
         """Assert that the markers are equivalent to the plotted markers.

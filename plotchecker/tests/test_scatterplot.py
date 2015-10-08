@@ -133,6 +133,21 @@ def test_edgewidths(axis):
     pc.assert_edgewidths_equal(w)
 
 
+@pytest.mark.xfail(reason="markers are unrecoverable from scatter plots")
+def test_markers(axis):
+    x = np.random.rand(10)
+    y = np.random.rand(10)
+    m = ['o', '.', 's', 'D', 'v', '^', '<', '>', 'H', '+']
+
+    for i in range(5):
+        axis.plot(x[i], y[i], marker=m[i])
+    for i in range(5, 10):
+        axis.scatter(x[i], y[i], marker=m[i])
+
+    pc = ScatterPlotChecker(axis)
+    pc.assert_markers_equal(m)
+
+
 def test_example_1(axes):
     x = np.random.rand(20)
     y = np.random.rand(20)
@@ -157,10 +172,6 @@ def test_example_1(axes):
         pc.assert_sizes_equal(25)
         pc.assert_markersizes_equal(5)
         pc.assert_alphas_equal(0.8)
-
-        # can't actually check markers, since they are unrecoverable
-        # from plt.scatter :(
-        pc.assert_markers_equal('o')
 
 
 def test_example_2(axes):
@@ -192,10 +203,6 @@ def test_example_2(axes):
         pc.assert_sizes_equal(sizes ** 2)
         pc.assert_markersizes_equal(sizes)
         pc.assert_alphas_equal(colors[:, 3])
-
-        # can't actually check markers, since they are unrecoverable
-        # from plt.scatter :(
-        pc.assert_markers_equal('o')
 
 
 def test_bad_colors_and_sizes(axis):
