@@ -1,6 +1,5 @@
 import numpy as np
 import itertools
-import matplotlib
 
 from .base import PlotChecker, InvalidPlotError
 
@@ -13,126 +12,210 @@ class LinePlotChecker(PlotChecker):
         self.lines = self.axis.get_lines()
         self.perm = list(range(len(self.lines)))
 
-        # check that there are only lines or collections, not both
+        # check that there are some lines plotted
         if len(self.lines) == 0:
             raise InvalidPlotError("No data found")
 
-    def _assert_equal(self, x, y):
-        np.testing.assert_equal(x[self.perm], y)
+    def _assert_equal(self, attr, expected, actual, perm=None):
+        if len(expected) != len(actual):
+            raise AssertionError(
+                "Invalid length for attribute '{}': {} (expected {})".format(
+                    attr, len(actual), len(expected)))
 
-    def find_permutation(self, attr_name, attr_val):
+        if perm is None:
+            perm = self.perm
+
+        for i in range(len(expected)):
+            try:
+                np.testing.assert_equal(expected[perm[i]], actual[i])
+            except AssertionError:
+                raise AssertionError(
+                    "Attribute '{}' does not match for line {} (expected: {}, actual: {})".format(
+                        attr, i, expected[perm[i]], actual[i]))
+
+    def find_permutation(self, attr_name, attr_vals):
+        """Find the order of the lines such that the plotted attribute (given
+        by `attr_name`) has values in the order given by `attr_vals`.
+
+        """
         if attr_name in ('colors', 'markerfacecolors', 'markeredgecolors'):
-            x = np.array([self._color2rgb(i) for i in attr_val])
+            expected = np.array([self._color2rgb(i) for i in attr_vals])
         else:
-            x = np.array(attr_val)
+            expected = attr_vals
 
-        y = getattr(self, attr_name)
-        for perm in itertools.permutations(np.arange(len(x))):
-            if (x[list(perm)] == y).all():
-                self.perm = list(perm)
+        actual = getattr(self, attr_name)
+
+        if len(expected) != len(actual):
+            raise AssertionError(
+                "Invalid length for attribute '{}': {} (expected {})".format(
+                    attr_name, len(actual), len(expected)))
+
+        for perm in itertools.permutations(np.arange(len(expected))):
+            try:
+                self._assert_equal(attr_name, expected, actual, perm=perm)
+            except AssertionError:
+                pass
+            else:
+                self.perm = perm
                 return
 
-        raise AssertionError("Could not find correct permutation of attr '{}'".format(attr_name))
+        raise AssertionError(
+            "Could not match plotted values {} to expected values {} for attr '{}'".format(
+                actual, expected, attr_name))
+
+    def assert_num_lines(self, num_lines):
+        """Assert that the plot has the given number of lines."""
+        if num_lines != len(self.lines):
+            raise AssertionError(
+                "Plot has incorrect number of lines: {} (expected {})".format(
+                    len(self.lines), num_lines))
 
     @property
     def x_data(self):
-        return np.array([x.get_xydata()[:, 0] for x in self.lines]).T
+        return [x.get_xydata()[:, 0] for x in self.lines]
 
     def assert_x_data_equal(self, x_data):
-        self._assert_equal(x_data.T, self.x_data.T)
+        """Assert that the given x_data is equivalent to the plotted x data.
+        x_data should be a list of lists/arrays, where the number of
+        lists/arrays is equal to the (expected) number of plotted lines.
+
+        """
+        self._assert_equal("x_data", x_data, self.x_data)
 
     @property
     def y_data(self):
-        return np.array([x.get_xydata()[:, 1] for x in self.lines]).T
+        return [x.get_xydata()[:, 1] for x in self.lines]
 
     def assert_y_data_equal(self, y_data):
-        self._assert_equal(y_data.T, self.y_data.T)
+        """Assert that the given y_data is equivalent to the plotted y data.
+        y_data should be a list of lists/arrays, where the number of
+        lists/arrays is equal to the (expected) number of plotted lines.
+
+        """
+        self._assert_equal("y_data", y_data, self.y_data)
 
     @property
     def colors(self):
         return np.array([self._color2rgb(x.get_color()) for x in self.lines])
 
     def assert_colors_equal(self, colors):
+        """Assert that the given colors are equivalent to the plotted line
+        colors. colors should be a list of colors with length equal to the
+        (expected) number of plotted lines. The colors can be given either as
+        RGB arrays, matplotlib colors (e.g. 'b' or 'red'), or hex values.
+
+        """
         colors = np.array([self._color2rgb(x) for x in colors])
-        if len(colors) == 1:
-            colors = self._tile_or_trim(self.x_data, colors)
-        self._assert_equal(colors, self.colors)
+        self._assert_equal("colors", colors, self.colors)
 
     @property
     def linewidths(self):
-        return np.array([x.get_linewidth() for x in self.lines])
+        return [x.get_linewidth() for x in self.lines]
 
     def assert_linewidths_equal(self, linewidths):
-        self._assert_equal(linewidths, self.linewidths)
+        """Assert that the given line widths are equivalent to the plotted line
+        widths. linewidths should be a list with length equal to the (expected)
+        number of plotted lines.
+
+        """
+        self._assert_equal("linewidths", linewidths, self.linewidths)
 
     @property
     def markerfacecolors(self):
-        return np.array([self._color2rgb(x.get_markerfacecolor()) for x in self.lines])
+        return [self._color2rgb(x.get_markerfacecolor()) for x in self.lines]
 
     def assert_markerfacecolors_equal(self, markerfacecolors):
+        """Assert that the given colors are equivalent to the plotted marker
+        face colors. markerfacecolors should be a list of colors with length
+        equal to the (expected) number of plotted lines. The colors can be given
+        either as RGB arrays, matplotlib colors (e.g. 'b' or 'red'), or hex
+        values.
+
+        """
         markerfacecolors = np.array([self._color2rgb(x) for x in markerfacecolors])
-        if len(markerfacecolors) == 1:
-            markerfacecolors = self._tile_or_trim(self.x_data, markerfacecolors)
-        self._assert_equal(markerfacecolors, self.markerfacecolors)
+        self._assert_equal("markerfacecolors", markerfacecolors, self.markerfacecolors)
 
     @property
     def markeredgecolors(self):
-        return np.array([self._color2rgb(x.get_markeredgecolor()) for x in self.lines])
+        return [self._color2rgb(x.get_markeredgecolor()) for x in self.lines]
 
     def assert_markeredgecolors_equal(self, markeredgecolors):
+        """Assert that the given colors are equivalent to the plotted marker
+        edge colors. markeredgecolors should be a list of colors with length
+        equal to the (expected) number of plotted lines. The colors can be given
+        either as RGB arrays, matplotlib colors (e.g. 'b' or 'red'), or hex
+        values.
+
+        """
         markeredgecolors = np.array([self._color2rgb(x) for x in markeredgecolors])
-        if len(markeredgecolors) == 1:
-            markeredgecolors = self._tile_or_trim(self.x_data, markeredgecolors)
-        self._assert_equal(markeredgecolors, self.markeredgecolors)
+        self._assert_equal("markeredgecolors", markeredgecolors, self.markeredgecolors)
 
     @property
     def markeredgewidths(self):
-        return np.array([x.get_markeredgewidth() for x in self.lines])
+        return [x.get_markeredgewidth() for x in self.lines]
 
     def assert_markeredgewidths_equal(self, markeredgewidths):
-        if not hasattr(markeredgewidths, '__iter__'):
-            markeredgewidths = np.array([markeredgewidths])
-        if len(markeredgewidths) == 1:
-            markeredgewidths = self._tile_or_trim(self.x_data, markeredgewidths)
-        self._assert_equal(markeredgewidths, self.markeredgewidths)
+        """Assert that the given marker edge widths are equivalent to the
+        plotted marker edge widths. markeredgewidths should be a list with
+        length equal to the (expected) number of plotted lines.
+
+        """
+        self._assert_equal("markeredgewidths", markeredgewidths, self.markeredgewidths)
 
     @property
     def markersizes(self):
-        return np.array([x.get_markersize() for x in self.lines])
+        return [x.get_markersize() for x in self.lines]
 
     def assert_markersizes_equal(self, markersizes):
-        self._assert_equal(markersizes, self.markersizes)
+        """Assert that the given marker sizes are equivalent to the plotted
+        marker sizes. markersizes should be a list with length equal to the
+        (expected) number of plotted lines.
+
+        """
+        self._assert_equal("markersizes", markersizes, self.markersizes)
 
     @property
     def markers(self):
-        return np.array([x.get_marker() for x in self.lines])
+        return [self._parse_marker(x.get_marker()) for x in self.lines]
 
     def assert_markers_equal(self, markers):
-        self._assert_equal(np.array(markers), self.markers)
+        """Assert that the given markers are equivalent to the plotted markers.
+        markers should be a list with length equal to the (expected) number of
+        plotted lines.
+
+        """
+        markers = [self._parse_marker(x) for x in markers]
+        self._assert_equal("markers", markers, self.markers)
 
     @property
     def labels(self):
         legend = self.axis.get_legend()
         if legend is None:
-            return np.array([])
-        return np.array([x.get_text() for x in legend.texts])
+            return []
+        return [x.get_text() for x in legend.texts]
 
     def assert_labels_equal(self, labels):
-        self._assert_equal(np.array(labels), self.labels)
+        """Assert that the given labels are equivalent to the legend labels.
+        labels should be a list with length equal to the (expected) number of
+        plotted lines.
+
+        """
+        self._assert_equal("labels", labels, self.labels)
 
     @property
     def alphas(self):
-        all_alphas = np.empty(len(self.lines))
-        for i, x in enumerate(self.lines):
+        all_alphas = []
+        for x in self.lines:
             if x.get_alpha() is None:
-                all_alphas[i] = self._color2alpha(x.get_color())
+                all_alphas.append(self._color2alpha(x.get_color()))
             else:
-                all_alphas[i] = x.get_alpha()
+                all_alphas.append(x.get_alpha())
         return all_alphas
 
     def assert_alphas_equal(self, alphas):
-        if not hasattr(alphas, '__iter__'):
-            alphas = np.array([alphas])
-        if len(alphas) == 1:
-            alphas = self._tile_or_trim(self.x_data, alphas)
-        self._assert_equal(np.array(alphas), self.alphas)
+        """Assert that the given alphas are equivalent to the plotted alphas.
+        alphas should be a list of alpha values with length equal to the
+        (expected) number of plotted lines.
+
+        """
+        self._assert_equal("alphas", alphas, self.alphas)

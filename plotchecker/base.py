@@ -46,6 +46,12 @@ class PlotChecker(object):
             raise ValueError("Invalid color: {}".format(color))
 
     @classmethod
+    def _parse_marker(cls, marker):
+        if marker is None or marker == 'None':
+            return ''
+        return marker
+
+    @classmethod
     def _tile_or_trim(cls, x, y):
         xn = x.shape[0]
         yn = y.shape[0]
