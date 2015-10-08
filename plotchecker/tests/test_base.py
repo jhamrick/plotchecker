@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 
-from ..base import PlotChecker
+from .. import PlotChecker
 
 
 def test_color2rgb():
@@ -41,3 +41,40 @@ def test_tile_or_trim():
     y0 = np.array([[0, -1, -2]])
     y1 = PlotChecker._tile_or_trim(x, y0)
     np.testing.assert_array_equal(y1, np.array([[0, -1, -2], [0, -1, -2], [0, -1, -2]]))
+
+
+def test_title_assertions(axis):
+    pc = PlotChecker(axis)
+    with pytest.raises(AssertionError):
+        pc.assert_title_exists()
+
+    axis.set_title("foo")
+    pc.assert_title_exists()
+    pc.assert_title_equal("foo")
+    with pytest.raises(AssertionError):
+        pc.assert_title_equal("bar")
+
+
+def test_xlabel_assertions(axis):
+    pc = PlotChecker(axis)
+    with pytest.raises(AssertionError):
+        pc.assert_xlabel_exists()
+
+    axis.set_xlabel("foo")
+    pc.assert_xlabel_exists()
+    pc.assert_xlabel_equal("foo")
+    with pytest.raises(AssertionError):
+        pc.assert_xlabel_equal("bar")
+
+
+def test_ylabel_assertions(axis):
+    pc = PlotChecker(axis)
+    with pytest.raises(AssertionError):
+        pc.assert_ylabel_exists()
+
+    axis.set_ylabel("foo")
+    pc.assert_ylabel_exists()
+    pc.assert_ylabel_equal("foo")
+    with pytest.raises(AssertionError):
+        pc.assert_ylabel_equal("bar")
+

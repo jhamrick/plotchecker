@@ -64,6 +64,54 @@ class PlotChecker(object):
             y = y[:xn]
         return y
 
+    @property
+    def title(self):
+        return self.axis.get_title()
+
+    def assert_title_equal(self, title):
+        """Asserts that the given title is the same as the plotted title."""
+        if self.title != title:
+            raise AssertionError(
+                "title is incorrect: '{}'' (expected '{}')".format(
+                    self.title, title))
+
+    def assert_title_exists(self):
+        """Asserts that the plotted title is non-empty."""
+        if self.title.strip() == '':
+            raise AssertionError("no title")
+
+    @property
+    def xlabel(self):
+        return self.axis.get_xlabel()
+
+    def assert_xlabel_equal(self, xlabel):
+        """Asserts that the given xlabel is the same as the plotted xlabel."""
+        if self.xlabel != xlabel:
+            raise AssertionError(
+                "xlabel is incorrect: '{}'' (expected '{}')".format(
+                    self.xlabel, xlabel))
+
+    def assert_xlabel_exists(self):
+        """Asserts that the plotted xlabel is non-empty."""
+        if self.xlabel.strip() == '':
+            raise AssertionError("no xlabel")
+
+    @property
+    def ylabel(self):
+        return self.axis.get_ylabel()
+
+    def assert_ylabel_equal(self, ylabel):
+        """Asserts that the given ylabel is the same as the plotted ylabel."""
+        if self.ylabel != ylabel:
+            raise AssertionError(
+                "ylabel is incorrect: '{}'' (expected '{}')".format(
+                    self.ylabel, ylabel))
+
+    def assert_ylabel_exists(self):
+        """Asserts that the plotted ylabel is non-empty."""
+        if self.ylabel.strip() == '':
+            raise AssertionError("no ylabel")
+
 
 # def get_label_text(ax):
 #     text = [x for x in ax.get_children()
