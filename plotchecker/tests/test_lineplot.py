@@ -372,4 +372,3 @@ def test_permutations(axis):
     pc.assert_markers_equal(markers)
     pc.assert_labels_equal(labels)
     pc.assert_alphas_equal([0.5, 0.5, 0.5])
-
