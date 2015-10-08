@@ -5,17 +5,23 @@ import warnings
 
 
 def install_flit():
-    sp.check_call([sys.executable, '-m', 'pip', 'install', 'flit'])
+    sp.check_call([sys.executable, '-m', 'pip', 'install', 'flit', 'mock'])
 
 
 def install_plotchecker(symlink):
-    command = ['flit', 'install']
-    args = ['--deps', 'none']
+    from pathlib import Path
+    from flit.install import Installer
+    from flit.log import enable_colourful_output
+    import mock
 
-    if symlink:
-        args += ['--symlink']
+    # Hack to make docs build on RTD
+    MOCK_MODULES = ['numpy', 'matplotlib', 'matplotlib.pyplot', 'matplotlib.colors', 'matplotlib.markers']
+    for mod_name in MOCK_MODULES:
+        sys.modules[mod_name] = mock.Mock()
 
-    sp.check_call([sys.executable, '-m'] + command + args)
+    enable_colourful_output()
+    p = Path('flit.ini')
+    Installer(p, symlink=symlink, deps='none').install()
 
 
 def install():
