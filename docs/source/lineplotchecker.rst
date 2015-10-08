@@ -1,9 +1,8 @@
-`plotchecker.LinePlotChecker`
-=============================
+Line plots
+==========
 
 .. currentmodule:: plotchecker
 
+Inherits from :class:`~plotchecker.PlotChecker`.
+
 .. autoclass:: LinePlotChecker
-    :members:
-    :undoc-members:
-    :show-inheritance:

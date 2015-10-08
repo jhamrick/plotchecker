@@ -1,9 +1,8 @@
-`plotchecker.ScatterPlotChecker`
-================================
+Scatter plots
+=============
 
 .. currentmodule:: plotchecker
 
+Inherits from :class:`~plotchecker.PlotChecker`.
+
 .. autoclass:: ScatterPlotChecker
-    :members:
-    :undoc-members:
-    :show-inheritance:

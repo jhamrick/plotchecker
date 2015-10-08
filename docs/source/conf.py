@@ -33,6 +33,7 @@ import shlex
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
+    'numpydoc'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -287,3 +288,13 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
+
+# -- Options for autodoc ---------------------------------------------
+
+autoclass_content = 'class'
+autodoc_member_order = 'bysource'
+autodoc_default_flags = ['members', 'undoc-members']
+
+# -- Options for numpydoc --------------------------------------------
+
+numpydoc_show_class_members = False
