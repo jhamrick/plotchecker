@@ -2,8 +2,9 @@
 
 [![Build Status](https://travis-ci.org/jhamrick/plotchecker.svg?branch=master)](https://travis-ci.org/jhamrick/plotchecker)
 [![codecov.io](http://codecov.io/github/jhamrick/plotchecker/coverage.svg?branch=master)](http://codecov.io/github/jhamrick/plotchecker?branch=master)
+[![Documentation Status](https://readthedocs.org/projects/plotchecker/badge/?version=latest)](http://plotchecker.readthedocs.org/en/latest/?badge=latest)
 
-A set of utilities for checking and grading matplotlib plots. Please note that `plotchecker` is only compatible with Python 3, and not legacy Python 2.
+A set of utilities for checking and grading matplotlib plots. **Please note that `plotchecker` is only compatible with Python 3, and not legacy Python 2**. Documentation is available on [Read The Docs](https://plotchecker.readthedocs.org/).
 
 The inspiration for this library comes from including plotting exercises in programming assignments. Often, there are multiple possible ways to solve a problem; for example, if students are asked to create a "scatter plot", the following are all valid methods of doing so:
 
