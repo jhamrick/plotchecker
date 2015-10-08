@@ -10,7 +10,7 @@ before_install:
   - conda install --yes pip python==$TRAVIS_PYTHON_VERSION numpy matplotlib
   - pip install flit
 install:
-  - flit install
+  - flit install --env -s
 script:
   - py.test --cov plotchecker
 after_success:
