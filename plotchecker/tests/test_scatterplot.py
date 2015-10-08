@@ -1,6 +1,24 @@
 import numpy as np
+import pytest
 
-from .. import ScatterPlotChecker
+from .. import ScatterPlotChecker, InvalidPlotError
+
+
+def test_empty_plot(axis):
+    """Is an error thrown when there is nothing plotted?"""
+    with pytest.raises(InvalidPlotError):
+        ScatterPlotChecker(axis)
+
+
+def test_bad_plot(axis):
+    """Is an error thrown when there are lines rather than points plotted?"""
+    # first just try for a single set of points
+    x0 = [1, 2.17, 3.3, 4]
+    y0 = [2.5, 3.25, 4.4, 5]
+    axis.plot(x0, y0)
+
+    with pytest.raises(InvalidPlotError):
+        ScatterPlotChecker(axis)
 
 
 def test_num_points(axis):
@@ -39,6 +57,9 @@ def test_num_points(axis):
     axis.plot(x4.T, y4.T, 'o')
     pc = ScatterPlotChecker(axis)
     pc.assert_num_points(22)
+
+    with pytest.raises(AssertionError):
+        pc.assert_num_points(16)
 
 
 def test_data(axis):
@@ -89,14 +110,14 @@ def test_example_1(axes):
     y = np.random.rand(20)
 
     # create a scatter plot with plot
-    axes[0].plot(x, y, 'o', color='b', ms=5)
+    axes[0].plot(x, y, 'o', color='b', ms=5, alpha=0.8)
 
     # create a scatter plot with scatter
-    axes[1].scatter(x, y, s=25, linewidth=0.5)
+    axes[1].scatter(x, y, s=25, linewidth=0.5, alpha=0.8)
 
     # create a scatter plot with plot *and* scatter!
-    axes[2].plot(x[:10], y[:10], 'o', color='b', ms=5)
-    axes[2].scatter(x[10:], y[10:], s=25, linewidth=0.5)
+    axes[2].plot(x[:10], y[:10], 'o', color='b', ms=5, alpha=0.8)
+    axes[2].scatter(x[10:], y[10:], s=25, linewidth=0.5, alpha=0.8)
 
     for ax in axes:
         pc = ScatterPlotChecker(ax)
@@ -107,7 +128,7 @@ def test_example_1(axes):
         pc.assert_edgewidths_equal(0.5)
         pc.assert_sizes_equal(25)
         pc.assert_markersizes_equal(5)
-        pc.assert_alphas_equal(1.0)
+        pc.assert_alphas_equal(0.8)
 
         # can't actually check markers, since they are unrecoverable
         # from plt.scatter :(

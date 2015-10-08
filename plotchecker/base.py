@@ -24,13 +24,13 @@ class PlotChecker(object):
     def _color2rgb(cls, color):
         if isinstance(color, six.string_types):
             if color in cls._named_colors:
-                return np.array(cls._named_colors[color], dtype=float)
+                return tuple(cls._named_colors[color])
             else:
-                return np.array(matplotlib.colors.hex2color(color), dtype=float)
-        elif len(color) == 3:
-            return np.array(color, dtype=float)
-        elif len(color) == 4:
-            return np.array(color, dtype=float)[:3]
+                return tuple(matplotlib.colors.hex2color(color))
+        elif hasattr(color, '__iter__') and len(color) == 3:
+            return tuple(color)
+        elif hasattr(color, '__iter__') and len(color) == 4:
+            return tuple(color[:3])
         else:
             raise ValueError("Invalid color: {}".format(color))
 
@@ -38,9 +38,9 @@ class PlotChecker(object):
     def _color2alpha(cls, color):
         if isinstance(color, six.string_types):
             return 1.0
-        elif len(color) == 3:
+        elif hasattr(color, '__iter__') and len(color) == 3:
             return 1.0
-        elif len(color) == 4:
+        elif hasattr(color, '__iter__') and len(color) == 4:
             return float(color[3])
         else:
             raise ValueError("Invalid color: {}".format(color))
@@ -53,11 +53,13 @@ class PlotChecker(object):
 
     @classmethod
     def _tile_or_trim(cls, x, y):
+        """Tiles or trims `y` so that `x.shape[0]` == `y.shape[0]`"""
         xn = x.shape[0]
         yn = y.shape[0]
         if xn > yn:
             numrep = np.ceil(xn / yn)
             y = np.tile(y, (numrep,) + (1,) * (y.ndim - 1))
+            yn = y.shape[0]
         if xn < yn:
             y = y[:xn]
         return y

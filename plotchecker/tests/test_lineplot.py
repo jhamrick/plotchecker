@@ -1,7 +1,13 @@
 import pytest
 import numpy as np
 
-from .. import LinePlotChecker
+from .. import LinePlotChecker, InvalidPlotError
+
+
+def test_empty_plot(axis):
+    """Is an error thrown when there is nothing plotted?"""
+    with pytest.raises(InvalidPlotError):
+        LinePlotChecker(axis)
 
 
 def test_num_lines(axis):
@@ -32,6 +38,9 @@ def test_num_lines(axis):
     axis.plot(x3.T, y3.T)
     pc = LinePlotChecker(axis)
     pc.assert_num_lines(5)
+
+    with pytest.raises(AssertionError):
+        pc.assert_num_lines(6)
 
 
 def test_data(axis):
@@ -372,3 +381,8 @@ def test_permutations(axis):
     pc.assert_markers_equal(markers)
     pc.assert_labels_equal(labels)
     pc.assert_alphas_equal([0.5, 0.5, 0.5])
+
+    with pytest.raises(AssertionError):
+        pc.find_permutation('labels', labels[:-1])
+    with pytest.raises(AssertionError):
+        pc.find_permutation('labels', [x + 'a' for x in labels])
