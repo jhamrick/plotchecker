@@ -140,14 +140,14 @@ class PlotChecker(object):
         return self.axis.get_xticks()
 
     def assert_xticks_equal(self, xticks):
-        np.testing.assert_equal(xticks, self.xticks)
+        np.testing.assert_equal(self.xticks, xticks)
 
     @property
     def yticks(self):
         return self.axis.get_yticks()
 
     def assert_yticks_equal(self, yticks):
-        np.testing.assert_equal(yticks, self.yticks)
+        np.testing.assert_equal(self.yticks, yticks)
 
     @property
     def xticklabels(self):
@@ -155,7 +155,7 @@ class PlotChecker(object):
 
     def assert_xticklabels_equal(self, xticklabels):
         xticklabels = [x.strip() for x in xticklabels]
-        np.testing.assert_equal(xticklabels, self.xticklabels)
+        np.testing.assert_equal(self.xticklabels, xticklabels)
 
     @property
     def yticklabels(self):
@@ -163,25 +163,35 @@ class PlotChecker(object):
 
     def assert_yticklabels_equal(self, yticklabels):
         yticklabels = [y.strip() for y in yticklabels]
-        np.testing.assert_equal(yticklabels, self.yticklabels)
+        np.testing.assert_equal(self.yticklabels, yticklabels)
 
 
-# def get_label_text(ax):
-#     text = [x for x in ax.get_children()
-#             if isinstance(x, matplotlib.text.Text)]
-#     text = [x for x in text if x.get_text() != ax.get_title()]
-#     text = [x for x in text if x.get_text().strip() != '']
-#     return [x.get_text().strip() for x in text]
+    @property
+    def _texts(self):
+        texts = []
+        for x in self.axis.get_children():
+            if not isinstance(x, matplotlib.text.Text):
+                continue
+            if x == self.axis.title:
+                continue
+            if x == getattr(self.axis, '_left_title', None):
+                continue
+            if x == getattr(self.axis, '_right_title', None):
+                continue
+            texts.append(x)
+        return texts
 
+    @property
+    def textlabels(self):
+        return [x.get_text().strip() for x in self._texts]
 
-# def get_label_pos(ax):
-#     text = [x for x in ax.get_children()
-#             if isinstance(x, matplotlib.text.Text)]
-#     text = [x for x in text if x.get_text() != ax.get_title()]
-#     text = [x for x in text if x.get_text().strip() != '']
-#     return np.vstack([x.get_position() for x in text])
+    def assert_textlabels_equal(self, textlabels):
+        textlabels = [x.strip() for x in textlabels]
+        np.testing.assert_equal(self.textlabels, textlabels)
 
+    @property
+    def textpoints(self):
+        return np.vstack([x.get_position() for x in self._texts])
 
-# def get_imshow_data(ax):
-#     image, = ax.get_images()
-#     return image._A
+    def assert_textpoints_equal(self, textpoints):
+        np.testing.assert_equal(self.textpoints, textpoints)

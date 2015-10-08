@@ -111,7 +111,7 @@ def test_edgecolors(axis):
     c = np.random.rand(10, 3)
 
     for i in range(5):
-        axis.plot(x[i], y[i], markeredgecolor=c[i])
+        axis.plot(x[i], y[i], 'o', markeredgecolor=c[i])
     for i in range(5, 10):
         axis.scatter(x[i], y[i], edgecolor=c[i])
 
@@ -125,7 +125,7 @@ def test_edgewidths(axis):
     w = np.arange(1, 11)
 
     for i in range(5):
-        axis.plot(x[i], y[i], markeredgewidth=w[i])
+        axis.plot(x[i], y[i], 'o', markeredgewidth=w[i])
     for i in range(5, 10):
         axis.scatter(x[i], y[i], linewidth=w[i])
 

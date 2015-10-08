@@ -127,3 +127,18 @@ def test_assert_yticklabels_equal(axis):
     pc.assert_yticklabels_equal(['a', 'b', 'c', 'd'])
     with pytest.raises(AssertionError):
         pc.assert_yticklabels_equal(['a', 'b', 'c'])
+
+def test_texts(axis):
+    x = np.random.rand(10)
+    y = np.random.rand(10)
+    t = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
+
+    for i in range(len(x)):
+        axis.text(x[i], y[i], t[i])
+    axis.set_title('foo')
+    axis.set_xlabel('bar')
+    axis.set_ylabel('baz')
+
+    pc = PlotChecker(axis)
+    pc.assert_textlabels_equal(t)
+    pc.assert_textpoints_equal(np.array([x, y]).T)

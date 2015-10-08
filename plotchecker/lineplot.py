@@ -27,7 +27,7 @@ class LinePlotChecker(PlotChecker):
 
         for i in range(len(expected)):
             try:
-                np.testing.assert_equal(expected[perm[i]], actual[i])
+                np.testing.assert_equal(actual[i], expected[perm[i]])
             except AssertionError:
                 raise AssertionError(
                     "Attribute '{}' does not match for line {} (expected: {}, actual: {})".format(

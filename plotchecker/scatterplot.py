@@ -18,6 +18,8 @@ class ScatterPlotChecker(PlotChecker):
         for x in self.lines:
             if len(x.get_xydata()) > 1 and x.get_linestyle() != 'None':
                 raise InvalidPlotError("This is supposed to be a scatter plot, but it has lines!")
+            if self._parse_marker(x.get_marker()) == '':
+                raise InvalidPlotError("This is supposed to be a scatter plot, but there are no markers!")
 
     def assert_num_points(self, num_points):
         """Assert that the plot has the given number of points."""
@@ -41,7 +43,7 @@ class ScatterPlotChecker(PlotChecker):
         (expected) number of plotted points.
 
         """
-        np.testing.assert_equal(x_data, self.x_data)
+        np.testing.assert_equal(self.x_data, x_data)
 
     @property
     def y_data(self):
@@ -58,7 +60,7 @@ class ScatterPlotChecker(PlotChecker):
         (expected) number of plotted points.
 
         """
-        np.testing.assert_equal(y_data, self.y_data)
+        np.testing.assert_equal(self.y_data, y_data)
 
     @property
     def colors(self):
@@ -89,7 +91,7 @@ class ScatterPlotChecker(PlotChecker):
         colors = np.array([self._color2rgb(x) for x in colors])
         if len(colors) == 1:
             colors = self._tile_or_trim(self.x_data, colors)
-        np.testing.assert_equal(colors, self.colors)
+        np.testing.assert_equal(self.colors, colors)
 
     @property
     def edgecolors(self):
@@ -120,7 +122,7 @@ class ScatterPlotChecker(PlotChecker):
         edgecolors = np.array([self._color2rgb(x) for x in edgecolors])
         if len(edgecolors) == 1:
             edgecolors = self._tile_or_trim(self.x_data, edgecolors)
-        np.testing.assert_equal(edgecolors, self.edgecolors)
+        np.testing.assert_equal(self.edgecolors, edgecolors)
 
     @property
     def edgewidths(self):
@@ -151,7 +153,7 @@ class ScatterPlotChecker(PlotChecker):
             edgewidths = np.array([edgewidths])
         if len(edgewidths) == 1:
             edgewidths = self._tile_or_trim(self.x_data, edgewidths)
-        np.testing.assert_equal(edgewidths, self.edgewidths)
+        np.testing.assert_equal(self.edgewidths, edgewidths)
 
     @property
     def sizes(self):
@@ -180,7 +182,7 @@ class ScatterPlotChecker(PlotChecker):
         Note: sizes is the square of markersizes.
 
         """
-        np.testing.assert_equal(sizes, self.sizes)
+        np.testing.assert_equal(self.sizes, sizes)
 
     @property
     def markersizes(self):
@@ -195,7 +197,7 @@ class ScatterPlotChecker(PlotChecker):
         Note: markersizes is the square root of sizes.
 
         """
-        np.testing.assert_equal(markersizes, self.markersizes)
+        np.testing.assert_equal(self.markersizes, markersizes)
 
     @property
     def markers(self):
@@ -212,7 +214,7 @@ class ScatterPlotChecker(PlotChecker):
         it's a collection)
 
         """
-        np.testing.assert_equal(markers, self.markers)
+        np.testing.assert_equal(self.markers, markers)
 
     @property
     def alphas(self):
@@ -249,4 +251,4 @@ class ScatterPlotChecker(PlotChecker):
             alphas = np.array([alphas])
         if len(alphas) == 1:
             alphas = self._tile_or_trim(self.x_data, alphas)
-        np.testing.assert_equal(np.array(alphas), self.alphas)
+        np.testing.assert_equal(self.alphas, alphas)
