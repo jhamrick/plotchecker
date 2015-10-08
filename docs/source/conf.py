@@ -16,6 +16,12 @@
 import sys
 import os
 import shlex
+import mock
+
+# Hack to make docs build on RTD
+MOCK_MODULES = ['numpy', 'matplotlib', 'matplotlib.pyplot', 'matplotlib.colors', 'matplotlib.markers']
+for mod_name in MOCK_MODULES:
+    sys.modules[mod_name] = mock.Mock()
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the

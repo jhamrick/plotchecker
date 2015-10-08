@@ -5,11 +5,16 @@ import matplotlib.colors
 import matplotlib.markers
 import numpy as np
 import six
+import warnings
 
 
-_named_colors = matplotlib.colors.ColorConverter.colors.copy()
-for colorname, hexcode in matplotlib.colors.cnames.items():
-    _named_colors[colorname] = matplotlib.colors.hex2color(hexcode)
+try:
+    _named_colors = matplotlib.colors.ColorConverter.colors.copy()
+    for colorname, hexcode in matplotlib.colors.cnames.items():
+        _named_colors[colorname] = matplotlib.colors.hex2color(hexcode)
+except:
+    warnings.warn("Could not get matplotlib colors, named colors will not be available")
+    _named_colors = {}
 
 
 class InvalidPlotError(Exception):

@@ -8,9 +8,9 @@ def install_flit():
     sp.check_call([sys.executable, '-m', 'pip', 'install', 'flit'])
 
 
-def install_nbgrader(symlink):
+def install_plotchecker(symlink):
     command = ['flit', 'install']
-    args = ['--deps', 'all']
+    args = ['--deps', 'none']
 
     if symlink:
         args += ['--symlink']
@@ -20,12 +20,12 @@ def install_nbgrader(symlink):
 
 def install():
     install_flit()
-    install_nbgrader(symlink=False)
+    install_plotchecker(symlink=False)
 
 
 def develop():
     install_flit()
-    install_nbgrader(symlink=True)
+    install_plotchecker(symlink=True)
 
 
 def egg_info():
@@ -37,7 +37,8 @@ def egg_info():
 if __name__ == "__main__":
     warnings.warn(
         'Warning: this setup.py uses flit, not setuptools. '
-        'Behavior may not be exactly what you expect!'
+        'Behavior may not be exactly what you expect! '
+        'In particular, this DOES NOT install ANY dependencies! '
     )
 
     parser = argparse.ArgumentParser('install_dev')
