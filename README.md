@@ -6,6 +6,16 @@
 
 A set of utilities for checking and grading matplotlib plots. **Please note that `plotchecker` is only compatible with Python 3, and not legacy Python 2**. Documentation is available on [Read The Docs](https://plotchecker.readthedocs.org/).
 
+## Installation
+
+To install `plotchecker`:
+
+```
+pip3 install plotchecker
+```
+
+## Background
+
 The inspiration for this library comes from including plotting exercises in programming assignments. Often, there are multiple possible ways to solve a problem; for example, if students are asked to create a "scatter plot", the following are all valid methods of doing so:
 
 ```python
