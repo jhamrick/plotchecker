@@ -78,6 +78,28 @@ def test_data(axis):
     pc.assert_y_data_equal([y0, y1, y2] + list(y3))
 
 
+def test_data_allclose(axis):
+    """Are the x and y values almost correct?"""
+    err = 1e-12
+    x0 = np.array([1, 2.17, 3.3, 4])
+    y0 = np.array([2.5, 3.25, 4.4, 5])
+    axis.plot(x0 + err, y0 + err)
+
+    pc = LinePlotChecker(axis)
+    with pytest.raises(AssertionError):
+        pc.assert_x_data_equal([x0])
+    with pytest.raises(AssertionError):
+        pc.assert_y_data_equal([y0])
+
+    with pytest.raises(AssertionError):
+        pc.assert_x_data_allclose([x0], rtol=1e-13)
+    with pytest.raises(AssertionError):
+        pc.assert_y_data_allclose([y0], rtol=1e-13)
+
+    pc.assert_x_data_allclose([x0])
+    pc.assert_y_data_allclose([y0])
+
+
 def test_colors(axis):
     """Are the colors correct?"""
     # first just try for a single line using rgb
@@ -108,6 +130,20 @@ def test_colors(axis):
     pc.assert_colors_equal([[0, 1, 1], '#FF0000', 'g', 'magenta', 'k', 'k'])
 
 
+def test_colors_allclose(axis):
+    """Are the colors almost correct?"""
+    err = 1e-12
+    color = np.array([0.1, 1, 1])
+    axis.plot([1, 2.17, 3.3, 4], [2.5, 3.25, 4.4, 5], color=color + err)
+
+    pc = LinePlotChecker(axis)
+    with pytest.raises(AssertionError):
+        pc.assert_colors_equal([color])
+    with pytest.raises(AssertionError):
+        pc.assert_colors_allclose([color], rtol=1e-13)
+    pc.assert_colors_allclose([color])
+
+
 def test_linewidths(axis):
     """Are the linewidths correct?"""
     # first just try for a single line
@@ -126,6 +162,20 @@ def test_linewidths(axis):
     axis.plot(x.T, y.T, linewidth=4)
     pc = LinePlotChecker(axis)
     pc.assert_linewidths_equal([1, 2, 4, 4])
+
+
+def test_linewidths_allclose(axis):
+    """Are the linewidths almost correct?"""
+    err = 1e-12
+    lw = 1
+    axis.plot([1, 2.17, 3.3, 4], [2.5, 3.25, 4.4, 5], lw=lw + err)
+
+    pc = LinePlotChecker(axis)
+    with pytest.raises(AssertionError):
+        pc.assert_linewidths_equal([lw])
+    with pytest.raises(AssertionError):
+        pc.assert_linewidths_allclose([lw], rtol=1e-13)
+    pc.assert_linewidths_allclose([lw])
 
 
 def test_markerfacecolors(axis):
@@ -163,6 +213,20 @@ def test_markerfacecolors(axis):
     pc.assert_markerfacecolors_equal(['c', [0, 1, 1], '#FF0000', 'g', 'magenta', 'k', 'k'])
 
 
+def test_markerfacecolors_allclose(axis):
+    """Are the markerfacecolors almost correct?"""
+    err = 1e-12
+    markerfacecolor = np.array([0.1, 1, 1])
+    axis.plot([1, 2.17, 3.3, 4], [2.5, 3.25, 4.4, 5], markerfacecolor=markerfacecolor + err)
+
+    pc = LinePlotChecker(axis)
+    with pytest.raises(AssertionError):
+        pc.assert_markerfacecolors_equal([markerfacecolor])
+    with pytest.raises(AssertionError):
+        pc.assert_markerfacecolors_allclose([markerfacecolor], rtol=1e-13)
+    pc.assert_markerfacecolors_allclose([markerfacecolor])
+
+
 def test_markeredgecolors(axis):
     """Are the marker edge colors correct?"""
     # inherit the color from the line -- this should actually be the default (black)
@@ -198,6 +262,20 @@ def test_markeredgecolors(axis):
     pc.assert_markeredgecolors_equal(['k', [0, 1, 1], '#FF0000', 'g', 'magenta', 'k', 'k'])
 
 
+def test_markeredgecolors_allclose(axis):
+    """Are the markeredgecolors almost correct?"""
+    err = 1e-12
+    markeredgecolor = np.array([0.1, 1, 1])
+    axis.plot([1, 2.17, 3.3, 4], [2.5, 3.25, 4.4, 5], markeredgecolor=markeredgecolor + err)
+
+    pc = LinePlotChecker(axis)
+    with pytest.raises(AssertionError):
+        pc.assert_markeredgecolors_equal([markeredgecolor])
+    with pytest.raises(AssertionError):
+        pc.assert_markeredgecolors_allclose([markeredgecolor], rtol=1e-13)
+    pc.assert_markeredgecolors_allclose([markeredgecolor])
+
+
 def test_markeredgewidths(axis):
     """Are the markeredgewidths correct?"""
     # first just try for a single line
@@ -218,6 +296,20 @@ def test_markeredgewidths(axis):
     pc.assert_markeredgewidths_equal([1, 2, 4, 4])
 
 
+def test_markeredgewidths_allclose(axis):
+    """Are the markeredgewidths almost correct?"""
+    err = 1e-12
+    markeredgewidth = 1
+    axis.plot([1, 2.17, 3.3, 4], [2.5, 3.25, 4.4, 5], markeredgewidth=markeredgewidth + err)
+
+    pc = LinePlotChecker(axis)
+    with pytest.raises(AssertionError):
+        pc.assert_markeredgewidths_equal([markeredgewidth])
+    with pytest.raises(AssertionError):
+        pc.assert_markeredgewidths_allclose([markeredgewidth], rtol=1e-13)
+    pc.assert_markeredgewidths_allclose([markeredgewidth])
+
+
 def test_markersizes(axis):
     """Are the markersizes correct?"""
     # first just try for a single line
@@ -236,6 +328,20 @@ def test_markersizes(axis):
     axis.plot(x.T, y.T, marker='o', markersize=4)
     pc = LinePlotChecker(axis)
     pc.assert_markersizes_equal([1, 2, 4, 4])
+
+
+def test_markersizes_allclose(axis):
+    """Are the markersizes almost correct?"""
+    err = 1e-12
+    markersize = 1
+    axis.plot([1, 2.17, 3.3, 4], [2.5, 3.25, 4.4, 5], markersize=markersize + err)
+
+    pc = LinePlotChecker(axis)
+    with pytest.raises(AssertionError):
+        pc.assert_markersizes_equal([markersize])
+    with pytest.raises(AssertionError):
+        pc.assert_markersizes_allclose([markersize], rtol=1e-13)
+    pc.assert_markersizes_allclose([markersize])
 
 
 def test_markers(axis):
@@ -334,6 +440,20 @@ def test_alphas(axis):
     axis.plot(x.T, y.T, alpha=0.2)
     pc = LinePlotChecker(axis)
     pc.assert_alphas_equal([1, 0.5, 0.2, 0.2])
+
+
+def test_alphas_allclose(axis):
+    """Are the alphas almost correct?"""
+    err = 1e-12
+    alpha = 0.5
+    axis.plot([1, 2.17, 3.3, 4], [2.5, 3.25, 4.4, 5], alpha=alpha + err)
+
+    pc = LinePlotChecker(axis)
+    with pytest.raises(AssertionError):
+        pc.assert_alphas_equal([alpha])
+    with pytest.raises(AssertionError):
+        pc.assert_alphas_allclose([alpha], rtol=1e-13)
+    pc.assert_alphas_allclose([alpha])
 
 
 def test_permutations(axis):

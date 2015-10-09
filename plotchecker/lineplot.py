@@ -362,7 +362,7 @@ class LinePlotChecker(PlotChecker):
             ``numpy.testing.assert_allclose``
 
         """
-        self._assert_equal("linewidths", linewidths, self.linewidths, **kwargs)
+        self._assert_allclose("linewidths", linewidths, self.linewidths, **kwargs)
 
     @property
     def markerfacecolors(self):

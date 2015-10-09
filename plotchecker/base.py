@@ -59,9 +59,9 @@ class PlotChecker(object):
             else:
                 return tuple(matplotlib.colors.hex2color(color))
         elif hasattr(color, '__iter__') and len(color) == 3:
-            return tuple(color)
+            return tuple(float(x) for x in color)
         elif hasattr(color, '__iter__') and len(color) == 4:
-            return tuple(color[:3])
+            return tuple(float(x) for x in color[:3])
         else:
             raise ValueError("Invalid color: {}".format(color))
 
