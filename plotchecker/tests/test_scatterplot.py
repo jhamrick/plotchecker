@@ -10,12 +10,23 @@ def test_empty_plot(axis):
         ScatterPlotChecker(axis)
 
 
-def test_bad_plot(axis):
+def test_bad_plot_lines(axis):
     """Is an error thrown when there are lines rather than points plotted?"""
     # first just try for a single set of points
     x0 = [1, 2.17, 3.3, 4]
     y0 = [2.5, 3.25, 4.4, 5]
     axis.plot(x0, y0)
+
+    with pytest.raises(InvalidPlotError):
+        ScatterPlotChecker(axis)
+
+
+def test_bad_plot_no_markers(axis):
+    """Is an error thrown when there are no markers plotted?"""
+    # first just try for a single set of points
+    x0 = [1, 2.17, 3.3, 4]
+    y0 = [2.5, 3.25, 4.4, 5]
+    axis.plot(x0, y0, linestyle='', marker='')
 
     with pytest.raises(InvalidPlotError):
         ScatterPlotChecker(axis)
