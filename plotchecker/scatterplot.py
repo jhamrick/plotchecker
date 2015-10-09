@@ -66,6 +66,22 @@ class ScatterPlotChecker(PlotChecker):
         """
         np.testing.assert_equal(self.x_data, x_data)
 
+    def assert_x_data_allclose(self, x_data, **kwargs):
+        """Assert that the given x-data is almost equal to the plotted
+        :attr:`~plotchecker.ScatterPlotChecker.x_data`.
+
+        Parameters
+        ----------
+        x_data : 1-D array-like
+            The expected x-data. The number of elements should be equal to the
+            (expected) number of plotted points.
+        kwargs :
+            Additional keyword arguments to pass to
+            ``numpy.testing.assert_allclose``
+
+        """
+        np.testing.assert_allclose(self.x_data, x_data, **kwargs)
+
     @property
     def y_data(self):
         """The y-values of the plotted data (1-D array)."""
@@ -88,6 +104,22 @@ class ScatterPlotChecker(PlotChecker):
 
         """
         np.testing.assert_equal(self.y_data, y_data)
+
+    def assert_y_data_allclose(self, y_data, **kwargs):
+        """Assert that the given y-data is almost equal to the plotted
+        :attr:`~plotchecker.ScatterPlotChecker.y_data`.
+
+        Parameters
+        ----------
+        y_data : 1-D array-like
+            The expected y-data. The number of elements should be equal to the
+            (expected) number of plotted points.
+        kwargs :
+            Additional keyword arguments to pass to
+            ``numpy.testing.assert_allclose``
+
+        """
+        np.testing.assert_allclose(self.y_data, y_data, **kwargs)
 
     @property
     def colors(self):
@@ -124,6 +156,26 @@ class ScatterPlotChecker(PlotChecker):
         if len(colors) == 1:
             colors = self._tile_or_trim(self.x_data, colors)
         np.testing.assert_equal(self.colors, colors)
+
+    def assert_colors_allclose(self, colors, **kwargs):
+        """Assert that the given colors are almost equal to the plotted
+        :attr:`~plotchecker.ScatterPlotChecker.colors`.
+
+        Parameters
+        ----------
+        colors : single color, or list of expected line colors
+            Each color can be either a matplotlib color name (e.g. ``'r'`` or
+            ``'red'``), a hexcode (e.g. ``"#FF0000"``), a 3-tuple RGB color, or
+            a 4-tuple RGBA color.
+        kwargs :
+            Additional keyword arguments to pass to
+            ``numpy.testing.assert_allclose``
+
+        """
+        colors = np.array([self._color2rgb(x) for x in colors])
+        if len(colors) == 1:
+            colors = self._tile_or_trim(self.x_data, colors)
+        np.testing.assert_allclose(self.colors, colors, **kwargs)
 
     @property
     def alphas(self):
@@ -168,6 +220,27 @@ class ScatterPlotChecker(PlotChecker):
             alphas = self._tile_or_trim(self.x_data, alphas)
         np.testing.assert_equal(self.alphas, alphas)
 
+    def assert_alphas_allclose(self, alphas, **kwargs):
+        """Assert that the given alpha values are almost equal to the plotted
+        :attr:`~plotchecker.ScatterPlotChecker.alphas`.
+
+        Parameters
+        ----------
+        alphas :
+            The expected alpha values. This should either be a single number
+            (which will apply to all the points) or an array with size equal to
+            the number of (expected) points.
+        kwargs :
+            Additional keyword arguments to pass to
+            ``numpy.testing.assert_allclose``
+
+        """
+        if not hasattr(alphas, '__iter__'):
+            alphas = np.array([alphas])
+        if len(alphas) == 1:
+            alphas = self._tile_or_trim(self.x_data, alphas)
+        np.testing.assert_allclose(self.alphas, alphas, **kwargs)
+
     @property
     def edgecolors(self):
         """The edge colors of the plotted points. Columns correspond to RGB values."""
@@ -203,6 +276,26 @@ class ScatterPlotChecker(PlotChecker):
         if len(edgecolors) == 1:
             edgecolors = self._tile_or_trim(self.x_data, edgecolors)
         np.testing.assert_equal(self.edgecolors, edgecolors)
+
+    def assert_edgecolors_allclose(self, edgecolors, **kwargs):
+        """Assert that the given edge colors are almost equal to the plotted
+        :attr:`~plotchecker.ScatterPlotChecker.edgecolors`.
+
+        Parameters
+        ----------
+        edgecolors : single color, or list of expected edge colors
+            Each color can be either a matplotlib color name (e.g. ``'r'`` or
+            ``'red'``), a hexcode (e.g. ``"#FF0000"``), a 3-tuple RGB color, or
+            a 4-tuple RGBA color.
+        kwargs :
+            Additional keyword arguments to pass to
+            ``numpy.testing.assert_allclose``
+
+        """
+        edgecolors = np.array([self._color2rgb(x) for x in edgecolors])
+        if len(edgecolors) == 1:
+            edgecolors = self._tile_or_trim(self.x_data, edgecolors)
+        np.testing.assert_allclose(self.edgecolors, edgecolors, **kwargs)
 
     @property
     def edgewidths(self):
@@ -241,6 +334,27 @@ class ScatterPlotChecker(PlotChecker):
             edgewidths = self._tile_or_trim(self.x_data, edgewidths)
         np.testing.assert_equal(self.edgewidths, edgewidths)
 
+    def assert_edgewidths_allclose(self, edgewidths, **kwargs):
+        """Assert that the given edge widths are almost equal to the plotted
+        :attr:`~plotchecker.ScatterPlotChecker.edgewidths`.
+
+        Parameters
+        ----------
+        edgewidths :
+            The expected edge widths. This should either be a single number
+            (which will apply to all the points) or an array with size equal to
+            the number of (expected) points.
+        kwargs :
+            Additional keyword arguments to pass to
+            ``numpy.testing.assert_allclose``
+
+        """
+        if not hasattr(edgewidths, '__iter__'):
+            edgewidths = np.array([edgewidths])
+        if len(edgewidths) == 1:
+            edgewidths = self._tile_or_trim(self.x_data, edgewidths)
+        np.testing.assert_allclose(self.edgewidths, edgewidths, **kwargs)
+
     @property
     def sizes(self):
         """The size of the plotted points. This is the square of
@@ -277,6 +391,23 @@ class ScatterPlotChecker(PlotChecker):
         """
         np.testing.assert_equal(self.sizes, sizes)
 
+    def assert_sizes_allclose(self, sizes, **kwargs):
+        """Assert that the given point sizes are almost equal to the plotted
+        :attr:`~plotchecker.ScatterPlotChecker.sizes`.
+
+        Parameters
+        ----------
+        sizes :
+            The expected point sizes. This should either be a single number
+            (which will apply to all the points) or an array with size equal to
+            the number of (expected) points.
+        kwargs :
+            Additional keyword arguments to pass to
+            ``numpy.testing.assert_allclose``
+
+        """
+        np.testing.assert_allclose(self.sizes, sizes, **kwargs)
+
     @property
     def markersizes(self):
         """The marker size of the plotted points. This is the square root of
@@ -298,6 +429,23 @@ class ScatterPlotChecker(PlotChecker):
 
         """
         np.testing.assert_equal(self.markersizes, markersizes)
+
+    def assert_markersizes_allclose(self, markersizes, **kwargs):
+        """Assert that the given marker sizes are almost equal to the plotted
+        :attr:`~plotchecker.ScatterPlotChecker.markersizes`.
+
+        Parameters
+        ----------
+        markersizes :
+            The expected marker sizes. This should either be a single number
+            (which will apply to all the points) or an array with size equal to
+            the number of (expected) points.
+        kwargs :
+            Additional keyword arguments to pass to
+            ``numpy.testing.assert_allclose``
+
+        """
+        np.testing.assert_allclose(self.markersizes, markersizes, **kwargs)
 
     @property
     def markers(self):

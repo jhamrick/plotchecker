@@ -24,7 +24,7 @@ class LinePlotChecker(PlotChecker):
         if len(self._lines) == 0:
             raise InvalidPlotError("No data found")
 
-    def _assert_equal(self, attr, expected, actual, perm=None):
+    def _assert_equal(self, attr, expected, actual, perm=None, func=None, **kwargs):
         """Helper method for asserting that attributes are equal. This should
         only really be called by other methods in this class.
 
@@ -45,6 +45,10 @@ class LinePlotChecker(PlotChecker):
         perm : list of integers (default: ``None``)
             The permutation between the expected lines and actual lines. If not
             given, then ``self._perm`` is used.
+        func : function (default=``numpy.testing.assert_equal``)
+            An assertion function to check for equality.
+        kwargs :
+            Additional keyword arguments to pass to ``func``
 
         """
         # first check that the number of attributes matches
@@ -57,14 +61,29 @@ class LinePlotChecker(PlotChecker):
         if perm is None:
             perm = self._perm
 
+        # set the default value of the function, if necessary
+        if func is None:
+            func = np.testing.assert_equal
+
         # check each line separately
         for i in range(len(expected)):
             try:
-                np.testing.assert_equal(actual[i], expected[perm[i]])
+                func(actual[i], expected[perm[i]], **kwargs)
             except AssertionError:
                 raise AssertionError(
                     "Attribute '{}' does not match for line {} (expected: {}, actual: {})".format(
                         attr, i, expected[perm[i]], actual[i]))
+
+    def _assert_allclose(self, attr, expected, actual, perm=None, **kwargs):
+        """Wrapper for ``self._assert_equal`` that passes
+        ``numpy.testing.assert_allclose`` as the assertion function.
+
+        """
+        self._assert_equal(
+            attr, expected, actual,
+            perm=perm,
+            func=np.testing.assert_allclose,
+            **kwargs)
 
     def find_permutation(self, attr_name, attr_vals):
         """Find the order of the lines such that the given attribute (given
@@ -183,6 +202,22 @@ class LinePlotChecker(PlotChecker):
         """
         self._assert_equal("x_data", x_data, self.x_data)
 
+    def assert_x_data_allclose(self, x_data, **kwargs):
+        """Assert that the given x-data is almost equal to the plotted
+        :attr:`~plotchecker.LinePlotChecker.x_data`.
+
+        Parameters
+        ----------
+        x_data : list of array-like
+            The expected x-data. The number of elements should be equal to the
+            (expected) number of plotted lines.
+        kwargs :
+            Additional keyword arguments to pass to
+            ``numpy.testing.assert_allclose``
+
+        """
+        self._assert_allclose("x_data", x_data, self.x_data, **kwargs)
+
     @property
     def y_data(self):
         """The y-values of the plotted data (list of arrays, one array per line)."""
@@ -200,6 +235,22 @@ class LinePlotChecker(PlotChecker):
 
         """
         self._assert_equal("y_data", y_data, self.y_data)
+
+    def assert_y_data_allclose(self, y_data, **kwargs):
+        """Assert that the given y-data is almost equal to the plotted
+        :attr:`~plotchecker.LinePlotChecker.y_data`.
+
+        Parameters
+        ----------
+        y_data : list of array-like
+            The expected y-data. The number of elements should be equal to the
+            (expected) number of plotted lines.
+        kwargs :
+            Additional keyword arguments to pass to
+            ``numpy.testing.assert_allclose``
+
+        """
+        self._assert_allclose("y_data", y_data, self.y_data, **kwargs)
 
     @property
     def colors(self):
@@ -220,6 +271,24 @@ class LinePlotChecker(PlotChecker):
         """
         colors = np.array([self._color2rgb(x) for x in colors])
         self._assert_equal("colors", colors, self.colors)
+
+    def assert_colors_allclose(self, colors, **kwargs):
+        """Assert that the given colors are almost equal to the plotted
+        :attr:`~plotchecker.LinePlotChecker.colors`.
+
+        Parameters
+        ----------
+        colors : list of expected line colors
+            Each color can be either a matplotlib color name (e.g. ``'r'`` or
+            ``'red'``), a hexcode (e.g. ``"#FF0000"``), a 3-tuple RGB color, or
+            a 4-tuple RGBA color.
+        kwargs :
+            Additional keyword arguments to pass to
+            ``numpy.testing.assert_allclose``
+
+        """
+        colors = np.array([self._color2rgb(x) for x in colors])
+        self._assert_allclose("colors", colors, self.colors, **kwargs)
 
     @property
     def alphas(self):
@@ -245,6 +314,22 @@ class LinePlotChecker(PlotChecker):
         """
         self._assert_equal("alphas", alphas, self.alphas)
 
+    def assert_alphas_allclose(self, alphas, **kwargs):
+        """Assert that the given alpha values are almost equal to the plotted
+        :attr:`~plotchecker.LinePlotChecker.alphas`.
+
+        Parameters
+        ----------
+        alphas : list of floats
+            The expected alpha values, with length equal to the (expected)
+            number of plotted lines.
+        kwargs :
+            Additional keyword arguments to pass to
+            ``numpy.testing.assert_allclose``
+
+        """
+        self._assert_allclose("alphas", alphas, self.alphas, **kwargs)
+
     @property
     def linewidths(self):
         """The line widths of the plotted lines."""
@@ -262,6 +347,22 @@ class LinePlotChecker(PlotChecker):
 
         """
         self._assert_equal("linewidths", linewidths, self.linewidths)
+
+    def assert_linewidths_allclose(self, linewidths, **kwargs):
+        """Assert that the given line widths are almost equal to the plotted
+        :attr:`~plotchecker.LinePlotChecker.linewidths`.
+
+        Parameters
+        ----------
+        linewidths : list of numbers
+            The expected linewidths, with length equal to the (expected) number
+            of plotted lines.
+        kwargs :
+            Additional keyword arguments to pass to
+            ``numpy.testing.assert_allclose``
+
+        """
+        self._assert_equal("linewidths", linewidths, self.linewidths, **kwargs)
 
     @property
     def markerfacecolors(self):
@@ -283,6 +384,25 @@ class LinePlotChecker(PlotChecker):
         markerfacecolors = np.array([self._color2rgb(x) for x in markerfacecolors])
         self._assert_equal("markerfacecolors", markerfacecolors, self.markerfacecolors)
 
+    def assert_markerfacecolors_allclose(self, markerfacecolors, **kwargs):
+        """Assert that the given marker face colors are almost equal to the
+        plotted :attr:`~plotchecker.LinePlotChecker.markerfacecolors`.
+
+        Parameters
+        ----------
+        markerfacecolors : list of expected marker face colors
+            Each color can be either a matplotlib color name (e.g. ``'r'`` or
+            ``'red'``), a hexcode (e.g. ``"#FF0000"``), a 3-tuple RGB color, or
+            a 4-tuple RGBA color.
+        kwargs :
+            Additional keyword arguments to pass to
+            ``numpy.testing.assert_allclose``
+
+        """
+        markerfacecolors = np.array([self._color2rgb(x) for x in markerfacecolors])
+        self._assert_allclose(
+            "markerfacecolors", markerfacecolors, self.markerfacecolors, **kwargs)
+
     @property
     def markeredgecolors(self):
         """The colors of the marker edges for the plotted lines."""
@@ -303,6 +423,25 @@ class LinePlotChecker(PlotChecker):
         markeredgecolors = np.array([self._color2rgb(x) for x in markeredgecolors])
         self._assert_equal("markeredgecolors", markeredgecolors, self.markeredgecolors)
 
+    def assert_markeredgecolors_allclose(self, markeredgecolors, **kwargs):
+        """Assert that the given marker edge colors are almost equal to the
+        plotted :attr:`~plotchecker.LinePlotChecker.markeredgecolors`.
+
+        Parameters
+        ----------
+        markeredgecolors : list of expected marker edge colors
+            Each color can be either a matplotlib color name (e.g. ``'r'`` or
+            ``'red'``), a hexcode (e.g. ``"#FF0000"``), a 3-tuple RGB color, or
+            a 4-tuple RGBA color.
+        kwargs :
+            Additional keyword arguments to pass to
+            ``numpy.testing.assert_allclose``
+
+        """
+        markeredgecolors = np.array([self._color2rgb(x) for x in markeredgecolors])
+        self._assert_allclose(
+            "markeredgecolors", markeredgecolors, self.markeredgecolors, **kwargs)
+
     @property
     def markeredgewidths(self):
         """The widths of the marker edges for the plotted lines."""
@@ -321,6 +460,23 @@ class LinePlotChecker(PlotChecker):
         """
         self._assert_equal("markeredgewidths", markeredgewidths, self.markeredgewidths)
 
+    def assert_markeredgewidths_allclose(self, markeredgewidths, **kwargs):
+        """Assert that the given marker edge widths are almost equal to the
+        plotted :attr:`~plotchecker.LinePlotChecker.markeredgewidths`.
+
+        Parameters
+        ----------
+        markeredgewidths : list of expected marker edge widths
+            The expected edge widths, with length equal to the (expected)
+            number of plotted lines.
+        kwargs :
+            Additional keyword arguments to pass to
+            ``numpy.testing.assert_allclose``
+
+        """
+        self._assert_allclose(
+            "markeredgewidths", markeredgewidths, self.markeredgewidths, **kwargs)
+
     @property
     def markersizes(self):
         """The marker sizes for the plotted lines."""
@@ -338,6 +494,23 @@ class LinePlotChecker(PlotChecker):
 
         """
         self._assert_equal("markersizes", markersizes, self.markersizes)
+
+    def assert_markersizes_allclose(self, markersizes, **kwargs):
+        """Assert that the given marker sizes are almost equal to the plotted
+        :attr:`~plotchecker.LinePlotChecker.markersizes`.
+
+        Parameters
+        ----------
+        markersizes : list of expected marker sizes
+            The expected marker sizes, with length equal to the (expected)
+            number of plotted lines.
+        kwargs :
+            Additional keyword arguments to pass to
+            ``numpy.testing.assert_allclose``
+
+        """
+        self._assert_allclose(
+            "markersizes", markersizes, self.markersizes, **kwargs)
 
     @property
     def markers(self):
