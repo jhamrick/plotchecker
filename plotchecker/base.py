@@ -59,9 +59,9 @@ class PlotChecker(object):
             else:
                 return tuple(matplotlib.colors.hex2color(color))
         elif hasattr(color, '__iter__') and len(color) == 3:
-            return tuple(color)
+            return tuple(float(x) for x in color)
         elif hasattr(color, '__iter__') and len(color) == 4:
-            return tuple(color[:3])
+            return tuple(float(x) for x in color[:3])
         else:
             raise ValueError("Invalid color: {}".format(color))
 
@@ -384,3 +384,20 @@ class PlotChecker(object):
 
         """
         np.testing.assert_equal(self.textpoints, textpoints)
+
+    def assert_textpoints_allclose(self, textpoints, **kwargs):
+        """Asserts that the given locations of the text objects are almost the
+        same as the plot's :attr:`~plotchecker.PlotChecker.textpoints`.
+
+        Parameters
+        ----------
+        textpoints : array-like, N-by-2
+            The expected text locations on the plot, where the first column
+            corresponds to the x-values, and the second column corresponds to
+            the y-values.
+        kwargs :
+            Additional keyword arguments to pass to
+            ``numpy.testing.assert_allclose``
+
+        """
+        np.testing.assert_allclose(self.textpoints, textpoints, **kwargs)

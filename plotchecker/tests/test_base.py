@@ -142,3 +142,25 @@ def test_texts(axis):
     pc = PlotChecker(axis)
     pc.assert_textlabels_equal(t)
     pc.assert_textpoints_equal(np.array([x, y]).T)
+
+def test_texts_allclose(axis):
+    err = 1e-12
+    x = np.round(np.random.rand(10), decimals=3)
+    y = np.round(np.random.rand(10), decimals=3)
+    x[x < 1e-3] = 1e-3
+    y[y < 1e-3] = 1e-3
+    t = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
+
+    for i in range(len(x)):
+        axis.text(x[i] + err, y[i] + err, t[i])
+    axis.set_title('foo')
+    axis.set_xlabel('bar')
+    axis.set_ylabel('baz')
+
+    pc = PlotChecker(axis)
+    pc.assert_textlabels_equal(t)
+    with pytest.raises(AssertionError):
+        pc.assert_textpoints_equal(np.array([x, y]).T)
+    with pytest.raises(AssertionError):
+        pc.assert_textpoints_allclose(np.array([x, y]).T, rtol=1e-13)
+    pc.assert_textpoints_allclose(np.array([x, y]).T)

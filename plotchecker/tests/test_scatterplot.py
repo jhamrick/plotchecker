@@ -116,6 +116,101 @@ def test_data(axis):
     pc.assert_y_data_equal(np.concatenate([y0, y1, y4.ravel(), y2, y3]))
 
 
+def test_data_allclose(axis):
+    """Are the x and y values almost correct?"""
+    err = 1e-12
+    x0 = np.array([1, 2.17, 3.3, 4])
+    y0 = np.array([2.5, 3.25, 4.4, 5])
+    axis.plot(x0 + err, y0 + err, 'o')
+
+    pc = ScatterPlotChecker(axis)
+    with pytest.raises(AssertionError):
+        pc.assert_x_data_equal(x0)
+    with pytest.raises(AssertionError):
+        pc.assert_y_data_equal(y0)
+
+    with pytest.raises(AssertionError):
+        pc.assert_x_data_allclose(x0, rtol=1e-13)
+    with pytest.raises(AssertionError):
+        pc.assert_y_data_allclose(y0, rtol=1e-13)
+
+    pc.assert_x_data_allclose(x0)
+    pc.assert_y_data_allclose(y0)
+
+
+def test_colors(axis):
+    x = np.random.rand(10)
+    y = np.random.rand(10)
+    c = np.random.rand(10, 3)
+
+    for i in range(5):
+        axis.plot(x[i], y[i], 'o', color=c[i])
+    for i in range(5, 10):
+        axis.scatter(x[i], y[i], c=c[i])
+
+    pc = ScatterPlotChecker(axis)
+    pc.assert_colors_equal(c)
+
+
+def test_colors_allclose(axis):
+    err = 1e-12
+    x = np.random.rand(10)
+    y = np.random.rand(10)
+    c = np.round(np.random.rand(10, 3), decimals=3)
+    c[c < 1e-3] = 1e-3
+
+    for i in range(5):
+        axis.plot(x[i], y[i], 'o', color=c[i] + err)
+    for i in range(5, 10):
+        axis.scatter(x[i], y[i], c=c[i] + err)
+
+    pc = ScatterPlotChecker(axis)
+    with pytest.raises(AssertionError):
+        pc.assert_colors_equal(c)
+
+    with pytest.raises(AssertionError):
+        pc.assert_colors_allclose(c, rtol=1e-13)
+
+    pc.assert_colors_allclose(c)
+
+
+def test_alphas(axis):
+    x = np.random.rand(10)
+    y = np.random.rand(10)
+    alphas = np.round(np.random.rand(10), decimals=3)
+    alphas[alphas < 1e-3] = 1e-3
+
+    for i in range(5):
+        axis.plot(x[i], y[i], 'o', alpha=alphas[i])
+    for i in range(5, 10):
+        axis.scatter(x[i], y[i], alpha=alphas[i])
+
+    pc = ScatterPlotChecker(axis)
+    pc.assert_alphas_equal(alphas)
+
+
+def test_alphas_allclose(axis):
+    err = 1e-12
+    x = np.random.rand(10)
+    y = np.random.rand(10)
+    alphas = np.round(np.random.rand(10), decimals=3)
+    alphas[alphas < 1e-3] = 1e-3
+
+    for i in range(5):
+        axis.plot(x[i], y[i], 'o', alpha=alphas[i] + err)
+    for i in range(5, 10):
+        axis.scatter(x[i], y[i], alpha=alphas[i] + err)
+
+    pc = ScatterPlotChecker(axis)
+    with pytest.raises(AssertionError):
+        pc.assert_alphas_equal(alphas)
+
+    with pytest.raises(AssertionError):
+        pc.assert_alphas_allclose(alphas, rtol=1e-13)
+
+    pc.assert_alphas_allclose(alphas)
+
+
 def test_edgecolors(axis):
     x = np.random.rand(10)
     y = np.random.rand(10)
@@ -130,6 +225,28 @@ def test_edgecolors(axis):
     pc.assert_edgecolors_equal(c)
 
 
+def test_edgecolors_allclose(axis):
+    err = 1e-12
+    x = np.random.rand(10)
+    y = np.random.rand(10)
+    c = np.round(np.random.rand(10, 3), decimals=3)
+    c[c < 1e-3] = 1e-3
+
+    for i in range(5):
+        axis.plot(x[i], y[i], 'o', markeredgecolor=c[i] + err)
+    for i in range(5, 10):
+        axis.scatter(x[i], y[i], edgecolor=c[i] + err)
+
+    pc = ScatterPlotChecker(axis)
+    with pytest.raises(AssertionError):
+        pc.assert_edgecolors_equal(c)
+
+    with pytest.raises(AssertionError):
+        pc.assert_edgecolors_allclose(c, rtol=1e-13)
+
+    pc.assert_edgecolors_allclose(c)
+
+
 def test_edgewidths(axis):
     x = np.random.rand(10)
     y = np.random.rand(10)
@@ -142,6 +259,97 @@ def test_edgewidths(axis):
 
     pc = ScatterPlotChecker(axis)
     pc.assert_edgewidths_equal(w)
+
+
+def test_edgewidths_allclose(axis):
+    err = 1e-12
+    x = np.random.rand(10)
+    y = np.random.rand(10)
+    edgewidths = np.arange(1, 11)
+
+    for i in range(5):
+        axis.plot(x[i], y[i], 'o', markeredgewidth=edgewidths[i] + err)
+    for i in range(5, 10):
+        axis.scatter(x[i], y[i], linewidth=edgewidths[i] + err)
+
+    pc = ScatterPlotChecker(axis)
+    with pytest.raises(AssertionError):
+        pc.assert_edgewidths_equal(edgewidths)
+
+    with pytest.raises(AssertionError):
+        pc.assert_edgewidths_allclose(edgewidths, rtol=1e-13)
+
+    pc.assert_edgewidths_allclose(edgewidths)
+
+
+def test_sizes(axis):
+    x = np.random.rand(10)
+    y = np.random.rand(10)
+    sizes = np.arange(1, 11).astype('float')
+
+    for i in range(5):
+        axis.plot(x[i], y[i], 'o', markersize=sizes[i])
+    for i in range(5, 10):
+        axis.scatter(x[i], y[i], s=sizes[i] ** 2)
+
+    pc = ScatterPlotChecker(axis)
+    pc.assert_sizes_equal(sizes ** 2)
+
+
+def test_sizes_allclose(axis):
+    err = 1e-12
+    x = np.random.rand(10)
+    y = np.random.rand(10)
+    sizes = np.arange(1, 11)
+
+    for i in range(5):
+        axis.plot(x[i], y[i], 'o', markersize=sizes[i] + err)
+    for i in range(5, 10):
+        axis.scatter(x[i], y[i], s=(sizes[i] ** 2) + err)
+
+    pc = ScatterPlotChecker(axis)
+    with pytest.raises(AssertionError):
+        pc.assert_sizes_equal(sizes ** 2)
+
+    with pytest.raises(AssertionError):
+        pc.assert_sizes_allclose(sizes ** 2, rtol=1e-13)
+
+    pc.assert_sizes_allclose(sizes ** 2)
+
+
+def test_markersizes(axis):
+    x = np.random.rand(10)
+    y = np.random.rand(10)
+    markersizes = np.arange(1, 11).astype('float')
+
+    for i in range(5):
+        axis.plot(x[i], y[i], 'o', markersize=markersizes[i])
+    for i in range(5, 10):
+        axis.scatter(x[i], y[i], s=markersizes[i] ** 2)
+
+    pc = ScatterPlotChecker(axis)
+    pc.assert_markersizes_equal(markersizes)
+
+
+def test_markersizes_allclose(axis):
+    err = 1e-12
+    x = np.random.rand(10)
+    y = np.random.rand(10)
+    markersizes = np.arange(1, 11)
+
+    for i in range(5):
+        axis.plot(x[i], y[i], 'o', markersize=markersizes[i] + err)
+    for i in range(5, 10):
+        axis.scatter(x[i], y[i], s=(markersizes[i] ** 2) + err)
+
+    pc = ScatterPlotChecker(axis)
+    with pytest.raises(AssertionError):
+        pc.assert_markersizes_equal(markersizes)
+
+    with pytest.raises(AssertionError):
+        pc.assert_markersizes_allclose(markersizes, rtol=1e-13)
+
+    pc.assert_markersizes_allclose(markersizes)
 
 
 @pytest.mark.xfail(reason="markers are unrecoverable from scatter plots")
