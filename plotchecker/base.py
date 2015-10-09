@@ -12,7 +12,7 @@ try:
     _named_colors = matplotlib.colors.ColorConverter.colors.copy()
     for colorname, hexcode in matplotlib.colors.cnames.items():
         _named_colors[colorname] = matplotlib.colors.hex2color(hexcode)
-except:
+except: # pragma: no cover
     warnings.warn("Could not get matplotlib colors, named colors will not be available")
     _named_colors = {}
 
