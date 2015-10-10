@@ -7,3 +7,4 @@ from ._version import version_info, __version__
 from .base import PlotChecker, InvalidPlotError
 from .lineplot import LinePlotChecker
 from .scatterplot import ScatterPlotChecker
+from .barplot import BarPlotChecker
