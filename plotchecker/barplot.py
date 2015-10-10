@@ -55,7 +55,7 @@ class BarPlotChecker(PlotChecker):
         if num_bars != len(self._patches):
             raise AssertionError(
                 "Plot has incorrect number of bars: {} (expected {})".format(
-                    len(self._bars), num_bars))
+                    len(self._patches), num_bars))
 
     @property
     def centers(self):
