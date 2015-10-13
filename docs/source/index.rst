@@ -9,6 +9,7 @@ Contents:
    plotchecker
    lineplotchecker
    scatterplotchecker
+   barplotchecker
 
 
 
