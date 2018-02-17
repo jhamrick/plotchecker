@@ -375,19 +375,19 @@ def test_example_1(axes):
     axes[0].plot(x, y, 'o', color='b', ms=5, alpha=0.8)
 
     # create a scatter plot with scatter
-    axes[1].scatter(x, y, s=25, linewidth=0.5, alpha=0.8)
+    axes[1].scatter(x, y, s=25, c='b', alpha=0.8)
 
     # create a scatter plot with plot *and* scatter!
     axes[2].plot(x[:10], y[:10], 'o', color='b', ms=5, alpha=0.8)
-    axes[2].scatter(x[10:], y[10:], s=25, linewidth=0.5, alpha=0.8)
+    axes[2].scatter(x[10:], y[10:], s=25, c='b', alpha=0.8)
 
     for ax in axes:
         pc = ScatterPlotChecker(ax)
         pc.assert_x_data_equal(x)
         pc.assert_y_data_equal(y)
         pc.assert_colors_equal('b')
-        pc.assert_edgecolors_equal('k')
-        pc.assert_edgewidths_equal(0.5)
+        pc.assert_edgecolors_equal('b')
+        pc.assert_edgewidths_equal(1)
         pc.assert_sizes_equal(25)
         pc.assert_markersizes_equal(5)
         pc.assert_alphas_equal(0.8)
@@ -406,19 +406,19 @@ def test_example_2(axes):
         axes[0].plot(x[i], y[i], 'o', color=colors[i], ms=sizes[i])
 
     # create a scatter plot with scatter
-    axes[1].scatter(x, y, c=colors, s=sizes ** 2, linewidth=0.5)
+    axes[1].scatter(x, y, c=colors, s=sizes ** 2)
 
     # create a scatter plot with scatter, using a loop
     for i in range(20):
-        axes[2].scatter(x[i], y[i], c=colors[i], s=sizes[i] ** 2, linewidth=0.5)
+        axes[2].scatter(x[i], y[i], c=colors[i], s=sizes[i] ** 2)
 
     for ax in axes:
         pc = ScatterPlotChecker(ax)
         pc.assert_x_data_equal(x)
         pc.assert_y_data_equal(y)
         pc.assert_colors_equal(colors)
-        pc.assert_edgecolors_equal('k')
-        pc.assert_edgewidths_equal(0.5)
+        pc.assert_edgecolors_equal(colors)
+        pc.assert_edgewidths_equal(1)
         pc.assert_sizes_equal(sizes ** 2)
         pc.assert_markersizes_equal(sizes)
         pc.assert_alphas_equal(colors[:, 3])
