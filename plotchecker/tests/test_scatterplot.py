@@ -217,9 +217,9 @@ def test_edgecolors(axis):
     c = np.random.rand(10, 3)
 
     for i in range(5):
-        axis.plot(x[i], y[i], 'o', markeredgecolor=c[i])
+        axis.plot(x[i], y[i], 'o', markeredgecolor=list(c[i]))
     for i in range(5, 10):
-        axis.scatter(x[i], y[i], edgecolor=c[i])
+        axis.scatter(x[i], y[i], edgecolor=list(c[i]))
 
     pc = ScatterPlotChecker(axis)
     pc.assert_edgecolors_equal(c)
@@ -233,9 +233,9 @@ def test_edgecolors_allclose(axis):
     c[c < 1e-3] = 1e-3
 
     for i in range(5):
-        axis.plot(x[i], y[i], 'o', markeredgecolor=c[i] + err)
+        axis.plot(x[i], y[i], 'o', markeredgecolor=list(c[i] + err))
     for i in range(5, 10):
-        axis.scatter(x[i], y[i], edgecolor=c[i] + err)
+        axis.scatter(x[i], y[i], edgecolor=list(c[i] + err))
 
     pc = ScatterPlotChecker(axis)
     with pytest.raises(AssertionError):

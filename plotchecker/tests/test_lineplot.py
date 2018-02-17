@@ -217,7 +217,7 @@ def test_markerfacecolors_allclose(axis):
     """Are the markerfacecolors almost correct?"""
     err = 1e-12
     markerfacecolor = np.array([0.1, 1, 1])
-    axis.plot([1, 2.17, 3.3, 4], [2.5, 3.25, 4.4, 5], markerfacecolor=markerfacecolor + err)
+    axis.plot([1, 2.17, 3.3, 4], [2.5, 3.25, 4.4, 5], markerfacecolor=list(markerfacecolor + err))
 
     pc = LinePlotChecker(axis)
     with pytest.raises(AssertionError):
@@ -266,7 +266,7 @@ def test_markeredgecolors_allclose(axis):
     """Are the markeredgecolors almost correct?"""
     err = 1e-12
     markeredgecolor = np.array([0.1, 1, 1])
-    axis.plot([1, 2.17, 3.3, 4], [2.5, 3.25, 4.4, 5], markeredgecolor=markeredgecolor + err)
+    axis.plot([1, 2.17, 3.3, 4], [2.5, 3.25, 4.4, 5], markeredgecolor=list(markeredgecolor + err))
 
     pc = LinePlotChecker(axis)
     with pytest.raises(AssertionError):
