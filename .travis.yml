@@ -12,7 +12,8 @@ before_install:
   - chmod +x miniconda.sh
   - ./miniconda.sh -b
   - export PATH=/home/travis/miniconda3/bin:$PATH
-  - conda install --yes pip python==$TRAVIS_PYTHON_VERSION numpy matplotlib
+  - conda remove -y pysocks
+  - conda install --yes pip python=$TRAVIS_PYTHON_VERSION numpy matplotlib
   - pip install flit
 install:
   - flit install --env -s
