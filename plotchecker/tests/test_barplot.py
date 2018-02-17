@@ -28,7 +28,7 @@ def test_data_left(axis):
     x = np.arange(10)
     y = np.linspace(1, 5, 10)
     b = np.linspace(0, 1, 10)
-    axis.bar(x, y, bottom=b)
+    axis.bar(x, y, bottom=b, align='edge')
 
     pc = BarPlotChecker(axis)
     pc.assert_centers_equal(x + 0.4)
@@ -42,7 +42,7 @@ def test_data_left_allclose(axis):
     x = np.arange(1, 11)
     y = np.linspace(1, 5, 10)
     b = np.linspace(0.1, 1, 10)
-    axis.bar(x + err, y + err, bottom=b + err)
+    axis.bar(x + err, y + err, bottom=b + err, align='edge')
 
     pc = BarPlotChecker(axis)
 
@@ -223,7 +223,7 @@ def test_alphas_allclose(axis):
     err = 1e-12
     x = np.arange(5)
     y = np.linspace(1, 5, 5)
-    alphas = np.linspace(0.1, 1, 5)
+    alphas = np.linspace(0.1, 0.99, 5)
 
     for i in range(len(x)):
         axis.bar(x[i], y[i], alpha=alphas[i] + err, align='center')
@@ -283,7 +283,7 @@ def test_example(axes):
     idx = np.arange(len(x))
     np.random.shuffle(idx)
     for i in idx:
-        axes[1].bar(x[i] - (widths[i] / 2), y[i], width=widths[i], color=colors[i, :3], alpha=alphas[i])
+        axes[1].bar(x[i] - (widths[i] / 2), y[i], width=widths[i], align='edge', color=colors[i, :3], alpha=alphas[i])
 
     # plot them in yet another order
     idx = np.arange(len(x))[::-1]

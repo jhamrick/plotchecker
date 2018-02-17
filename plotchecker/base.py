@@ -127,7 +127,7 @@ class PlotChecker(object):
         xn = x.shape[0]
         yn = y.shape[0]
         if xn > yn:
-            numrep = np.ceil(xn / yn)
+            numrep = int(np.ceil(xn / yn))
             y = np.tile(y, (numrep,) + (1,) * (y.ndim - 1))
             yn = y.shape[0]
         if xn < yn:

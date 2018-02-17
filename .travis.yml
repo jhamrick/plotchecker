@@ -2,6 +2,8 @@ language: python
 sudo: false
 python:
   - 3.4
+  - 3.5
+  - 3.6
 branches:
   only:
     - master
@@ -10,7 +12,9 @@ before_install:
   - chmod +x miniconda.sh
   - ./miniconda.sh -b
   - export PATH=/home/travis/miniconda3/bin:$PATH
-  - conda install --yes pip python==$TRAVIS_PYTHON_VERSION numpy matplotlib
+  - conda create --yes -n plotchecker python=$TRAVIS_PYTHON_VERSION
+  - source activate plotchecker
+  - conda install --yes numpy matplotlib
   - pip install flit
 install:
   - flit install --env -s

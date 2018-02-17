@@ -134,7 +134,7 @@ def test_colors_allclose(axis):
     """Are the colors almost correct?"""
     err = 1e-12
     color = np.array([0.1, 1, 1])
-    axis.plot([1, 2.17, 3.3, 4], [2.5, 3.25, 4.4, 5], color=color + err)
+    axis.plot([1, 2.17, 3.3, 4], [2.5, 3.25, 4.4, 5], color=color - err)
 
     pc = LinePlotChecker(axis)
     with pytest.raises(AssertionError):
@@ -217,7 +217,7 @@ def test_markerfacecolors_allclose(axis):
     """Are the markerfacecolors almost correct?"""
     err = 1e-12
     markerfacecolor = np.array([0.1, 1, 1])
-    axis.plot([1, 2.17, 3.3, 4], [2.5, 3.25, 4.4, 5], markerfacecolor=markerfacecolor + err)
+    axis.plot([1, 2.17, 3.3, 4], [2.5, 3.25, 4.4, 5], markerfacecolor=list(markerfacecolor + err))
 
     pc = LinePlotChecker(axis)
     with pytest.raises(AssertionError):
@@ -229,44 +229,44 @@ def test_markerfacecolors_allclose(axis):
 
 def test_markeredgecolors(axis):
     """Are the marker edge colors correct?"""
-    # inherit the color from the line -- this should actually be the default (black)
+    # inherit the color from the line -- this should actually be the default (grey)
     axis.plot([1, 2.17, 3.3, 4], [2.5, 3.25, 4.4, 5], marker='o', color='c')
     pc = LinePlotChecker(axis)
-    pc.assert_markeredgecolors_equal(['k'])
+    pc.assert_markeredgecolors_equal([[0, 0.75, 0.75]])
 
     # add another line, using rgb
     axis.plot([1, 2.17, 3.3, 4], [2.5, 3.25, 4.4, 5], marker='o', markeredgecolor=[0, 1, 1])
     pc = LinePlotChecker(axis)
-    pc.assert_markeredgecolors_equal(['k', [0, 1, 1]])
+    pc.assert_markeredgecolors_equal([[0, 0.75, 0.75], [0, 1, 1]])
 
     # add another line, using hex values
     axis.plot([1, 2.17, 3.3, 4], [2.5, 3.25, 4.4, 5], marker='o', markeredgecolor='#FF0000')
     pc = LinePlotChecker(axis)
-    pc.assert_markeredgecolors_equal(['k', [0, 1, 1], '#FF0000'])
+    pc.assert_markeredgecolors_equal([[0, 0.75, 0.75], [0, 1, 1], '#FF0000'])
 
     # add another line, using matplotlib colors
     axis.plot([1, 2.17, 3.3, 4], [2.5, 3.25, 4.4, 5], marker='o', markeredgecolor='g')
     pc = LinePlotChecker(axis)
-    pc.assert_markeredgecolors_equal(['k', [0, 1, 1], '#FF0000', 'g'])
+    pc.assert_markeredgecolors_equal([[0, 0.75, 0.75], [0, 1, 1], '#FF0000', 'g'])
 
     # add another line, using full matplotlib color names
     axis.plot([1, 2.17, 3.3, 4], [2.5, 3.25, 4.4, 5], marker='o', markeredgecolor='magenta')
     pc = LinePlotChecker(axis)
-    pc.assert_markeredgecolors_equal(['k', [0, 1, 1], '#FF0000', 'g', 'magenta'])
+    pc.assert_markeredgecolors_equal([[0, 0.75, 0.75], [0, 1, 1], '#FF0000', 'g', 'magenta'])
 
     # and now two more lines, plotted at the same time
     x = np.array([[4.3, 5, 6], [5.3, 6, 7]])
     y = np.array([[3.4, 4, 7], [10.2, 9, 8]])
     axis.plot(x.T, y.T, marker='o', markeredgecolor='k')
     pc = LinePlotChecker(axis)
-    pc.assert_markeredgecolors_equal(['k', [0, 1, 1], '#FF0000', 'g', 'magenta', 'k', 'k'])
+    pc.assert_markeredgecolors_equal([[0, 0.75, 0.75], [0, 1, 1], '#FF0000', 'g', 'magenta', 'k', 'k'])
 
 
 def test_markeredgecolors_allclose(axis):
     """Are the markeredgecolors almost correct?"""
     err = 1e-12
     markeredgecolor = np.array([0.1, 1, 1])
-    axis.plot([1, 2.17, 3.3, 4], [2.5, 3.25, 4.4, 5], markeredgecolor=markeredgecolor + err)
+    axis.plot([1, 2.17, 3.3, 4], [2.5, 3.25, 4.4, 5], markeredgecolor=list(markeredgecolor + err))
 
     pc = LinePlotChecker(axis)
     with pytest.raises(AssertionError):
